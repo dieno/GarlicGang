@@ -1,0 +1,1 @@
+cpuminer-allium-x64 -a allium -o stratum+tcp://garlicmine.com:3333 -u GNwJhNG4GEUFvsMK3Ehho9JrYpS3CjRHno
