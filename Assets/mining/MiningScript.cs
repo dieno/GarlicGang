@@ -10,8 +10,13 @@ public class MiningScript : MonoBehaviour
 
     private Process Proc;
 
-	// Use this for initialization
-	void Start ()
+    void Awake()
+    {
+        DontDestroyOnLoad(transform.gameObject);
+    }
+
+    // Use this for initialization
+    void Start ()
     {
         if (AutoStart)
             StartMiner();
