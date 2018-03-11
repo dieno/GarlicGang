@@ -1,19 +1,26 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using UnityEngine.UI;
 
 namespace CommonCore.Dialogue
 {
 
     public class DialogueController : MonoBehaviour
     {
+        public Text TextTitle;
+        public Text TextMain;
+        public Button[] ButtonsChoice;
+        public Renderer RendererSubject;
+
         private string CurrentSceneName;
         private Dictionary<string, Frame> CurrentSceneFrames;
 
-        private string CurrentFrameName;
+        //private string CurrentFrameName;
         private Frame CurrentFrameObject;       
         
         void Start()
@@ -133,11 +140,105 @@ namespace CommonCore.Dialogue
 
         private void PresentNewFrame(string s)
         {
-
+            PresentNewFrame(CurrentSceneFrames[s]);
         }
         
         private void PresentNewFrame(Frame f) //args?
         {
+            //TODO background and music
+
+            //present cutout
+            try
+            {
+                RendererSubject.material.mainTexture = Resources.Load<Texture>("dImages/" + f.Image);
+            }
+            catch(Exception e) //pokemon
+            {
+                Debug.Log(e);
+            }
+            
+
+            //present text
+            TextTitle.text = f.NameText;
+            TextMain.text = f.Text;
+
+            //present buttons
+            foreach(Button b in ButtonsChoice)
+            {
+                b.gameObject.SetActive(false);
+            }
+
+            if(f is ChoiceFrame)
+            {
+                ChoiceFrame cf = (ChoiceFrame)f;
+                for (int i = 0; i < cf.Choices.Length && i < ButtonsChoice.Length; i++)
+                {
+                    //will need to be redone to effectively deal with conditionals
+                    ChoiceNode cn = cf.Choices[i];
+                    Button b = ButtonsChoice[i];
+                    b.gameObject.SetActive(true);
+                    b.transform.Find("Text").GetComponent<Text>().text = cn.Text;
+                }
+            }
+            else // if(f is TextFrame)
+            {
+                Button b = ButtonsChoice[ButtonsChoice.Length - 1];
+                b.gameObject.SetActive(true);
+                b.transform.Find("Text").GetComponent<Text>().text = "Continue..."; //TODO nextText support
+            }
+
+            CurrentFrameObject = f;
+        }
+
+        public void OnChoiceButtonClick(int idx)
+        {
+            string choice = null;
+            if(CurrentFrameObject is ChoiceFrame)
+            {
+                choice = ((ChoiceFrame)CurrentFrameObject).Choices[idx].Next;
+            }
+            else
+            {
+                choice = CurrentFrameObject.Next;
+            }
+
+            //TODO handle parsing and transition
+            Debug.Log(choice);
+
+            GotoNext(choice);
+
+        }
+
+        private KeyValuePair<string, string> ParseLocation(string loc)
+        {
+            if (!loc.Contains("."))
+                return new KeyValuePair<string, string>(null, loc);
+
+            var arr = loc.Split('.');
+            return new KeyValuePair<string, string>(arr[0], arr[1]);
+        }
+
+        private void GotoNext(string next)
+        {
+            var nextLoc = ParseLocation(next);
+
+            if(string.IsNullOrEmpty(nextLoc.Key) || nextLoc.Key == "this" || nextLoc.Key == CurrentSceneName)
+            {
+                PresentNewFrame(nextLoc.Value);
+            }
+            else if(nextLoc.Key == "meta")
+            {
+                //TODO any meta ones
+            }
+            else if (nextLoc.Key == "scene")
+            {
+                SceneManager.LoadScene(nextLoc.Value);
+            }
+            else
+            {
+                LoadDialogue(nextLoc.Key);
+                PresentNewFrame(nextLoc.Value);
+            }
 
         }
 
