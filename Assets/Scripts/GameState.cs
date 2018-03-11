@@ -33,7 +33,13 @@ public class GameState
     //actual state data
     public bool InCampaign;
     public int CurrentLevel;
+
+    //temporary
     public List<string> CampaignFlags;
+    public Dictionary<string, int> CampaignVars;
+    public Dictionary<string, int> CampaignQuests;
+    public List<string> PlayerItems;
+    
 
     //scene transition stuff
     public string NextScene;

@@ -171,13 +171,28 @@ namespace CommonCore.Dialogue
             if(f is ChoiceFrame)
             {
                 ChoiceFrame cf = (ChoiceFrame)f;
-                for (int i = 0; i < cf.Choices.Length && i < ButtonsChoice.Length; i++)
+                for (int i = 0, j = 0; i < cf.Choices.Length && j < ButtonsChoice.Length; i++)
                 {
                     //will need to be redone to effectively deal with conditionals
                     ChoiceNode cn = cf.Choices[i];
-                    Button b = ButtonsChoice[i];
-                    b.gameObject.SetActive(true);
-                    b.transform.Find("Text").GetComponent<Text>().text = cn.Text;
+                    bool showChoice = true;
+                    if(cn.ShowCondition != null)
+                    {
+                        showChoice = cn.ShowCondition.Evaluate();
+                    }
+                    if(cn.HideCondition != null && showChoice)
+                    {
+                        showChoice = !cn.HideCondition.Evaluate();
+                    }
+
+                    if(showChoice)
+                    {
+                        Button b = ButtonsChoice[j];
+                        b.gameObject.SetActive(true);
+                        b.transform.Find("Text").GetComponent<Text>().text = cn.Text;
+                        j++;
+                    }
+                    
                 }
             }
             else // if(f is TextFrame)
