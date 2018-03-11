@@ -57,7 +57,7 @@ namespace CommonCore.Dialogue
                 sNext = jo["default"].Value<string>();
             if (jo["text"] != null)
                 sText = jo["text"].Value<string>();
-            Frame baseFrame = new Frame(sBackground, sImage, sNext, sMusic, string.Empty, string.Empty);
+            Frame baseFrame = new Frame(sBackground, sImage, sNext, sMusic, string.Empty, string.Empty, null, null);
 
             //parse frames
             Dictionary<string, Frame> frames = new Dictionary<string, Frame>();
@@ -108,8 +108,28 @@ namespace CommonCore.Dialogue
             if (jt["type"] != null)
                 type = jt["type"].Value<string>();
 
-            
-            if(type == "choice")
+            //TODO load/parse conditionals and microscripts
+            ConditionNode[] conditional = null;
+            MicroscriptNode[] microscript = null;
+
+            if(jt["conditional"] != null)
+            {
+                List<ConditionNode> cList = new List<ConditionNode>();
+                JArray ja = (JArray)jt["conditional"];
+                foreach (var x in ja)
+                {
+                    cList.Add(ParseConditionNode(x));
+                }
+                conditional = cList.ToArray();
+            }
+
+            if (jt["microscript"] != null)
+            {
+                //TODO parse microscripts
+
+            }
+
+            if (type == "choice")
             {
                 //parse choices if choice frame
                 List<ChoiceNode> choices = new List<ChoiceNode>();
@@ -118,11 +138,11 @@ namespace CommonCore.Dialogue
                 {
                     choices.Add(ParseChoiceNode(x));
                 }
-                return new ChoiceFrame(background, image, next, music, nameText, text, choices.ToArray());
+                return new ChoiceFrame(background, image, next, music, nameText, text, choices.ToArray(), conditional, microscript);
             }
             else if(type == "text")
             {
-                return new TextFrame(background, image, next, music, nameText, text);
+                return new TextFrame(background, image, next, music, nameText, text, conditional, microscript);
             }
             else
             {
@@ -135,7 +155,147 @@ namespace CommonCore.Dialogue
             string text = jt["text"].Value<string>();
             string next = jt["next"].Value<string>();
 
-            return new ChoiceNode(next, text);
+            MicroscriptNode[] microscripts = null;
+            if(jt["microscript"] != null)
+            {
+                //TODO parse microscripts
+                
+            }
+
+            ConditionNode[] conditionals = null;
+            if(jt["conditional"] != null)
+            {
+                List<ConditionNode> cList = new List<ConditionNode>();
+                JArray ja = (JArray)jt["conditional"];
+                foreach(var x in ja)
+                {
+                    cList.Add(ParseConditionNode(x));
+                }
+                conditionals = cList.ToArray();
+            }
+
+            Condition showCondition = null;
+            if(jt["showCondition"] != null)
+            {
+                showCondition = ParseSingleCondition(jt["showCondition"]);
+            }
+
+            Condition hideCondition = null;
+            if(jt["hideCondition"] != null)
+            {
+                hideCondition = ParseSingleCondition(jt["hideCondition"]);
+            }
+
+            return new ChoiceNode(next, text, showCondition, hideCondition, microscripts, conditionals);
+        }
+
+        private ConditionNode ParseConditionNode(JToken jt)
+        {
+            //next and list of conditions
+            string next = jt["next"].Value<string>();
+            JArray ja = (JArray)jt["conditions"];
+            List<Condition> conditions = new List<Condition>();
+            foreach(var x in ja)
+            {
+                conditions.Add(ParseSingleCondition(x));
+            }
+
+            return new ConditionNode(next, conditions.ToArray());
+        }
+
+        private Condition ParseSingleCondition(JToken jt)
+        {
+            //types
+            ConditionType type;
+            string target;
+            if(jt["flag"] != null)
+            {
+                type = ConditionType.Flag;
+                target = jt["flag"].Value<string>();
+            }
+            else if(jt["noflag"] != null)
+            {
+                type = ConditionType.NoFlag;
+                target = jt["noflag"].Value<string>();
+            }
+            else if(jt["variable"] != null)
+            {
+                type = ConditionType.Variable;
+                target = jt["variable"].Value<string>();
+            }
+            else if(jt["affinity"] != null)
+            {
+                type = ConditionType.Affinity;
+                target = jt["affinity"].Value<string>();
+            }
+            else if(jt["quest"] != null)
+            {
+                type = ConditionType.Quest;
+                target = jt["quest"].Value<string>();
+            }
+            else if(jt["item"] != null)
+            {
+                type = ConditionType.Item;
+                target = jt["item"].Value<string>();
+            }
+            else
+            {
+                throw new NotSupportedException();
+            }
+
+            //options
+            ConditionOption? option = null;
+            int optionValue = 0;
+            if(type == ConditionType.Item)
+            {
+                //check for "consume"
+                if (jt["consume"] != null)
+                {
+                    option = ConditionOption.Consume;
+                    optionValue = Convert.ToInt32(jt["consume"].Value<bool>());
+                }
+                    
+            }
+            else if(type == ConditionType.Affinity || type == ConditionType.Quest || type == ConditionType.Variable)
+            {
+                if(jt["greater"] != null)
+                {
+                    option = ConditionOption.Greater;
+                    optionValue = jt["greater"].Value<int>();
+                }
+                else if(jt["less"] != null)
+                {
+                    option = ConditionOption.Less;
+                    optionValue = jt["less"].Value<int>();
+                }
+                else if (jt["equal"] != null)
+                {
+                    option = ConditionOption.Equal;
+                    optionValue = jt["equal"].Value<int>();
+                }
+                else if (jt["greaterEqual"] != null)
+                {
+                    option = ConditionOption.GreaterEqual;
+                    optionValue = jt["greaterEqual"].Value<int>();
+                }
+                else if (jt["lessEqual"] != null)
+                {
+                    option = ConditionOption.LessEqual;
+                    optionValue = jt["lessEqual"].Value<int>();
+                }
+                else if (jt["started"] != null)
+                {
+                    option = ConditionOption.Started;
+                    optionValue = Convert.ToInt32(jt["started"].Value<bool>());
+                }
+                else if (jt["finished"] != null)
+                {
+                    option = ConditionOption.Finished;
+                    optionValue = Convert.ToInt32(jt["finished"].Value<bool>());
+                }
+            }
+
+            return new Condition(type, target, option, optionValue);
         }
 
         private void PresentNewFrame(string s)
@@ -208,16 +368,27 @@ namespace CommonCore.Dialogue
         public void OnChoiceButtonClick(int idx)
         {
             string choice = null;
-            if(CurrentFrameObject is ChoiceFrame)
+            if(CurrentFrameObject is ChoiceFrame) //TODO evaluate conditionals and microscripts
             {
-                choice = ((ChoiceFrame)CurrentFrameObject).Choices[idx].Next;
+                var cf = (ChoiceFrame)CurrentFrameObject;
+
+                if(cf.NextConditional != null)
+                {
+                    choice = cf.Choices[idx].EvaluateConditional();
+                }
+                else
+                {
+                    choice = cf.Choices[idx].Next;
+                } 
             }
             else
             {
-                choice = CurrentFrameObject.Next;
+                if (CurrentFrameObject.NextConditional != null && CurrentFrameObject.NextConditional.Length > 0)
+                    choice = CurrentFrameObject.EvaluateConditional();
+                else
+                    choice = CurrentFrameObject.Next;
             }
-
-            //TODO handle parsing and transition
+            
             Debug.Log(choice);
 
             GotoNext(choice);

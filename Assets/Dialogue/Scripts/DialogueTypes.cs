@@ -10,6 +10,8 @@ namespace CommonCore.Dialogue
     {
         public readonly string Text;
         public readonly string Next;
+        public readonly MicroscriptNode[] NextMicroscript;
+        public readonly ConditionNode[] NextConditional;
 
         public readonly Condition ShowCondition;
         public readonly Condition HideCondition;
@@ -20,12 +22,26 @@ namespace CommonCore.Dialogue
             Next = next;
         }
 
-        public ChoiceNode(string next, string text, Condition showCondition, Condition hideCondition)
+        public ChoiceNode(string next, string text, Condition showCondition, Condition hideCondition, MicroscriptNode[] nextMicroscript, ConditionNode[] nextConditional)
             : this(next, text)
         {
             ShowCondition = showCondition;
             HideCondition = hideCondition;
+            NextMicroscript = nextMicroscript;
+            NextConditional = nextConditional;
         }
+
+        public string EvaluateConditional()
+        {
+            for (int i = NextConditional.Length - 1; i >= 0; i--)
+            {
+                var nc = NextConditional[i];
+                if (nc.Evaluate())
+                    return nc.Next;
+            }
+            return null;
+        }
+
     }
 
     internal class Frame
@@ -36,8 +52,10 @@ namespace CommonCore.Dialogue
         public readonly string Music;
         public readonly string NameText;
         public readonly string Text;
+        public readonly ConditionNode[] NextConditional;
+        public readonly MicroscriptNode[] NextMicroscript;
 
-        public Frame(string background, string image, string next, string music, string nameText, string text)
+        public Frame(string background, string image, string next, string music, string nameText, string text, ConditionNode[] nextConditional, MicroscriptNode[] nextMicroscript)
         {
             Background = background;
             Image = image;
@@ -45,13 +63,30 @@ namespace CommonCore.Dialogue
             Music = music;
             NameText = nameText;
             Text = text;
+
+            if (nextConditional != null && nextConditional.Length > 0)
+                NextConditional = (ConditionNode[])nextConditional.Clone();
+
+            if (nextMicroscript != null && nextMicroscript.Length > 0)
+                NextMicroscript = (MicroscriptNode[])nextMicroscript.Clone();
+        }
+
+        public string EvaluateConditional()
+        {
+            for(int i = NextConditional.Length-1; i >= 0; i--)
+            {
+                var nc = NextConditional[i];
+                if (nc.Evaluate())
+                    return nc.Next;
+            }
+            return null;
         }
     }
 
     internal class TextFrame : Frame
     {
-        public TextFrame(string background, string image, string next, string music, string nameText, string text)
-            : base(background, image, next, music, nameText, text)
+        public TextFrame(string background, string image, string next, string music, string nameText, string text, ConditionNode[] nextConditional, MicroscriptNode[] nextMicroscript)
+            : base(background, image, next, music, nameText, text, nextConditional, nextMicroscript)
         {
             
         }
@@ -61,8 +96,8 @@ namespace CommonCore.Dialogue
     {
         public readonly ChoiceNode[] Choices;
 
-        public ChoiceFrame(string background, string image, string next, string music, string nameText, string text, ChoiceNode[] choices)
-            : base(background, image, next, music, nameText, text)
+        public ChoiceFrame(string background, string image, string next, string music, string nameText, string text, ChoiceNode[] choices, ConditionNode[] nextConditional, MicroscriptNode[] nextMicroscript)
+            : base(background, image, next, music, nameText, text, nextConditional, nextMicroscript)
         {
             Choices = (ChoiceNode[])choices.Clone();
         }
@@ -77,6 +112,19 @@ namespace CommonCore.Dialogue
         {
             Next = next;
             Conditions = conditions;
+        }
+
+        public bool Evaluate()
+        {
+            if (Conditions == null || Conditions.Length == 0) //odd, but in the spec
+                return true;
+
+            foreach(Condition c in Conditions)
+            {
+                if (!c.Evaluate())
+                    return false;
+            }
+            return true;
         }
     }
 
@@ -162,6 +210,11 @@ namespace CommonCore.Dialogue
                     throw new NotSupportedException();
             }
         }
+    }
+
+    internal class MicroscriptNode
+    {
+        //TODO
     }
 
 }
