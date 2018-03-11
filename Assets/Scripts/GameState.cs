@@ -27,7 +27,10 @@ public class GameState
     private GameState()
     {
         // any initial setup
-        CampaignFlags = new List<string>();        
+        CampaignFlags = new List<string>();
+        CampaignVars = new Dictionary<string, int>();
+        CampaignQuests = new Dictionary<string, int>();
+        PlayerItems = new List<string>();
     }
 
     //actual state data
@@ -35,7 +38,7 @@ public class GameState
     public int CurrentLevel;
 
     //temporary
-    public List<string> CampaignFlags;
+    public List<string> CampaignFlags; //should REALLY REALLY be a Set<string>
     public Dictionary<string, int> CampaignVars;
     public Dictionary<string, int> CampaignQuests;
     public List<string> PlayerItems;

@@ -118,7 +118,14 @@ namespace CommonCore.Dialogue
                 JArray ja = (JArray)jt["conditional"];
                 foreach (var x in ja)
                 {
-                    cList.Add(ParseConditionNode(x));
+                    try
+                    {
+                        cList.Add(ParseConditionNode(x));
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogWarning(e);
+                    }
                 }
                 conditional = cList.ToArray();
             }
@@ -126,7 +133,20 @@ namespace CommonCore.Dialogue
             if (jt["microscript"] != null)
             {
                 //TODO parse microscripts
-
+                List<MicroscriptNode> nList = new List<MicroscriptNode>();
+                JArray ja = (JArray)jt["microscript"];
+                foreach (var x in ja)
+                {
+                    try
+                    {
+                        nList.Add(ParseMicroscript(x));
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogWarning(e);
+                    }
+                }
+                microscript = nList.ToArray();
             }
 
             if (type == "choice")
@@ -159,7 +179,20 @@ namespace CommonCore.Dialogue
             if(jt["microscript"] != null)
             {
                 //TODO parse microscripts
-                
+                List<MicroscriptNode> nList = new List<MicroscriptNode>();
+                JArray ja = (JArray)jt["microscript"];
+                foreach(var x in ja)
+                {
+                    try
+                    {
+                        nList.Add(ParseMicroscript(x));
+                    }
+                    catch(Exception e)
+                    {
+                        Debug.LogWarning(e);
+                    }                    
+                }
+                microscripts = nList.ToArray();
             }
 
             ConditionNode[] conditionals = null;
@@ -169,7 +202,15 @@ namespace CommonCore.Dialogue
                 JArray ja = (JArray)jt["conditional"];
                 foreach(var x in ja)
                 {
-                    cList.Add(ParseConditionNode(x));
+                    try
+                    {
+                        cList.Add(ParseConditionNode(x));
+                    }
+                    catch(Exception e)
+                    {
+                        Debug.LogWarning(e);
+                    }
+                    
                 }
                 conditionals = cList.ToArray();
             }
@@ -298,6 +339,87 @@ namespace CommonCore.Dialogue
             return new Condition(type, target, option, optionValue);
         }
 
+        private MicroscriptNode ParseMicroscript(JToken jt)
+        {
+            MicroscriptType type;
+            string target;
+            if(jt["flag"] != null)
+            {
+                type = MicroscriptType.Flag;
+                target = jt["flag"].Value<string>();
+            }
+            else if(jt["item"] != null)
+            {
+                type = MicroscriptType.Item;
+                target = jt["item"].Value<string>();
+            }
+            else if (jt["variable"] != null)
+            {
+                type = MicroscriptType.Variable;
+                target = jt["variable"].Value<string>();
+            }
+            else if (jt["affinity"] != null)
+            {
+                type = MicroscriptType.Affinity;
+                target = jt["affinity"].Value<string>();
+            }
+            else if (jt["quest"] != null)
+            {
+                type = MicroscriptType.Quest;
+                target = jt["quest"].Value<string>();
+            }
+            else
+            {
+                throw new NotSupportedException();
+            }
+
+            MicroscriptAction action;
+            int value = 0;
+            if(jt["set"] != null)
+            {
+                action = MicroscriptAction.Set;
+                if (type == MicroscriptType.Flag) //parse as boolean
+                    value = Convert.ToInt32(jt["set"].Value<bool>());
+                else //otherwise parse as number
+                    value = jt["set"].Value<int>(); 
+            }
+            else if (jt["toggle"] != null)
+            {
+                action = MicroscriptAction.Toggle;
+            }
+            else if(jt["add"] != null)
+            {
+                action = MicroscriptAction.Add;
+                value = jt["add"].Value<int>();
+            }
+            else if (jt["give"] != null)
+            {
+                action = MicroscriptAction.Give;
+                value = jt["give"].Value<int>();
+            }
+            else if (jt["take"] != null)
+            {
+                action = MicroscriptAction.Take;
+                value = jt["take"].Value<int>();
+            }
+            else if (jt["start"] != null)
+            {
+                action = MicroscriptAction.Start;
+                value = jt["start"].Value<int>();
+            }
+            else if (jt["finish"] != null)
+            {
+                action = MicroscriptAction.Finish;
+                value = jt["finish"].Value<int>();
+            }
+            else
+            {
+                throw new NotSupportedException();
+            }
+
+            return new MicroscriptNode(type, target, action, value);
+        }
+
         private void PresentNewFrame(string s)
         {
             PresentNewFrame(CurrentSceneFrames[s]);
@@ -368,11 +490,11 @@ namespace CommonCore.Dialogue
         public void OnChoiceButtonClick(int idx)
         {
             string choice = null;
-            if(CurrentFrameObject is ChoiceFrame) //TODO evaluate conditionals and microscripts
+            if(CurrentFrameObject is ChoiceFrame)
             {
                 var cf = (ChoiceFrame)CurrentFrameObject;
 
-                if(cf.NextConditional != null)
+                if(cf.Choices[idx].NextConditional != null)
                 {
                     choice = cf.Choices[idx].EvaluateConditional();
                 }
@@ -380,6 +502,12 @@ namespace CommonCore.Dialogue
                 {
                     choice = cf.Choices[idx].Next;
                 } 
+
+                //exec microscripts
+                if(cf.Choices[idx].NextMicroscript != null)
+                {
+                    cf.Choices[idx].EvaluateMicroscript();
+                }
             }
             else
             {
@@ -387,6 +515,11 @@ namespace CommonCore.Dialogue
                     choice = CurrentFrameObject.EvaluateConditional();
                 else
                     choice = CurrentFrameObject.Next;
+
+                if(CurrentFrameObject.NextMicroscript != null)
+                {
+                    CurrentFrameObject.EvaluateMicroscript();
+                }
             }
             
             Debug.Log(choice);

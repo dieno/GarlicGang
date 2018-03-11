@@ -42,6 +42,17 @@ namespace CommonCore.Dialogue
             return null;
         }
 
+        public void EvaluateMicroscript()
+        {
+            if (NextMicroscript == null || NextMicroscript.Length < 1)
+                return;
+
+            foreach (MicroscriptNode mn in NextMicroscript)
+            {
+                mn.Execute();
+            }
+        }
+
     }
 
     internal class Frame
@@ -80,6 +91,17 @@ namespace CommonCore.Dialogue
                     return nc.Next;
             }
             return null;
+        }
+
+        public void EvaluateMicroscript()
+        {
+            if (NextMicroscript == null || NextMicroscript.Length < 1)
+                return;
+
+            foreach (MicroscriptNode mn in NextMicroscript)
+            {
+                mn.Execute();
+            }
         }
     }
 
@@ -212,9 +234,147 @@ namespace CommonCore.Dialogue
         }
     }
 
-    internal class MicroscriptNode
+    internal enum MicroscriptType
     {
-        //TODO
+        Flag, Item, Variable, Affinity, Quest //eval is again not supported
+    }
+
+    internal enum MicroscriptAction
+    {
+        Set, Toggle, Add, Give, Take, Start, Finish
+    }
+
+    internal class MicroscriptNode //"directive" in Katana parlance
+    {
+        public readonly MicroscriptType Type;
+        public readonly string Target;
+        public readonly MicroscriptAction Action;
+        public readonly int Value;
+
+        public MicroscriptNode(MicroscriptType type, string target, MicroscriptAction action, int value)
+        {
+            Type = type;
+            Target = target;
+            Action = action;
+            Value = value;
+        }
+
+        public void Execute()
+        {
+            switch (Type)
+            {
+                case MicroscriptType.Flag:
+                    if(Action == MicroscriptAction.Toggle)
+                    {
+                        int idx = GameState.Instance.CampaignFlags.IndexOf(Target);
+                        if (idx < 0)
+                            GameState.Instance.CampaignFlags.Add(Target);
+                        else
+                            GameState.Instance.CampaignFlags.RemoveAt(idx);
+                    }
+                    else if (Action == MicroscriptAction.Set)
+                    {
+                        bool sv = Convert.ToBoolean(Value);
+                        if(sv)
+                        {
+                            //add if not present
+                            if (!GameState.Instance.CampaignFlags.Contains(Target))
+                                GameState.Instance.CampaignFlags.Add(Target);
+                        }
+                        else
+                        {
+                            //remove if present
+                            if (GameState.Instance.CampaignFlags.Contains(Target))
+                                GameState.Instance.CampaignFlags.Remove(Target);
+                        }
+                    }
+                    else
+                    {
+                        throw new NotSupportedException();
+                    }
+                    break;
+                case MicroscriptType.Item:
+                    if(Action == MicroscriptAction.Give)
+                    {
+                        throw new NotImplementedException(); //let's figure out how inventory will work first
+                    }
+                    else if(Action == MicroscriptAction.Take)
+                    {
+                        throw new NotImplementedException(); //let's figure out how inventory will work first
+                    }
+                    else
+                    {
+                        throw new NotSupportedException();
+                    }
+                    break;
+                case MicroscriptType.Variable:
+                    if(Action == MicroscriptAction.Set)
+                    {
+                        if (!GameState.Instance.CampaignVars.ContainsKey(Target))
+                            GameState.Instance.CampaignVars.Add(Target, 0);
+
+                        GameState.Instance.CampaignVars[Target] = Value;
+                    }
+                    else if(Action == MicroscriptAction.Add)
+                    {
+                        if (!GameState.Instance.CampaignVars.ContainsKey(Target))
+                            GameState.Instance.CampaignVars.Add(Target, 0);
+
+                        GameState.Instance.CampaignVars[Target] += Value;
+                    }
+                    else
+                    {
+                        throw new NotSupportedException();
+                    }
+                    break;
+                case MicroscriptType.Affinity:
+                    throw new NotImplementedException();
+                case MicroscriptType.Quest:
+                    if(Action == MicroscriptAction.Set)
+                    {
+                        if (!GameState.Instance.CampaignQuests.ContainsKey(Target))
+                            GameState.Instance.CampaignQuests.Add(Target, 0);
+
+
+                    }
+                    else if(Action == MicroscriptAction.Add)
+                    {
+                        if (!GameState.Instance.CampaignQuests.ContainsKey(Target))
+                            GameState.Instance.CampaignQuests.Add(Target, 0);
+
+
+                    }
+                    else if(Action == MicroscriptAction.Start)
+                    {
+                        if (!GameState.Instance.CampaignQuests.ContainsKey(Target))
+                            GameState.Instance.CampaignQuests.Add(Target, 0);
+
+                        if(GameState.Instance.CampaignQuests[Target] > 0)
+                        {
+                            //quest is started, set value
+                            GameState.Instance.CampaignQuests[Target] = Value;
+                        }
+
+                    }
+                    else if(Action == MicroscriptAction.Finish)
+                    {
+                        if (!GameState.Instance.CampaignQuests.ContainsKey(Target))
+                        {
+                            //if it's not defined, it hasn't been started and can't be finished
+                        }
+                        else
+                        {
+                            if (GameState.Instance.CampaignQuests[Target] > 0)
+                                GameState.Instance.CampaignQuests[Target] = Value;
+                        }
+
+                    }
+                    break;
+                default:
+                    throw new NotSupportedException();
+            }
+
+        }
     }
 
 }
