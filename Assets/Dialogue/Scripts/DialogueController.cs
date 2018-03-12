@@ -183,7 +183,7 @@ namespace CommonCore.Dialogue
                 }
             }
             
-            Debug.Log(choice);
+            //Debug.Log(choice);
 
             GotoNext(choice);
 

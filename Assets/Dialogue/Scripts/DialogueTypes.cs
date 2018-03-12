@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+
 namespace CommonCore.Dialogue
 {
     internal enum FrameType
@@ -152,7 +154,7 @@ namespace CommonCore.Dialogue
 
     internal enum ConditionType
     {
-        Flag, NoFlag, Item, Variable, Affinity, Quest //Eval is obviously not supported, might be able to provide Emit instead
+        Flag, NoFlag, Item, Variable, Affinity, Quest, ActorValue //Eval is obviously not supported, might be able to provide Emit instead
     }
 
     internal enum ConditionOption
@@ -184,15 +186,10 @@ namespace CommonCore.Dialogue
                 case ConditionType.NoFlag:
                     return !GameState.Instance.CampaignFlags.Contains(Target);
                 case ConditionType.Item:
-                    int index = GameState.Instance.PlayerItems.IndexOf(Target);
-                    if (index < 0)
+                    int qty = GameState.Instance.Player.CountItem(Target);
+                    if (qty < 1)
                         return false;
-                    else
-                    {
-                        if (Option.HasValue && Option.Value == ConditionOption.Consume && Convert.ToBoolean(OptionValue))
-                            GameState.Instance.PlayerItems.RemoveAt(index);
-                        return true;
-                    }
+                    else return true;                    
                 case ConditionType.Variable:
                     if (GameState.Instance.CampaignVars.ContainsKey(Target))
                         return EvaluateValueWithOption(GameState.Instance.CampaignVars[Target]);
@@ -203,6 +200,16 @@ namespace CommonCore.Dialogue
                     if (GameState.Instance.CampaignQuests.ContainsKey(Target))
                         return EvaluateValueWithOption(GameState.Instance.CampaignQuests[Target]);
                     else return false;
+                case ConditionType.ActorValue:
+                    try
+                    {
+                        int av = GameState.Instance.Player.GetAV<int>(Target);
+                        return EvaluateValueWithOption(av);
+                    }
+                    catch(KeyNotFoundException)
+                    {
+                        return false;
+                    }
                 default:
                     throw new NotSupportedException();
             }
@@ -236,7 +243,7 @@ namespace CommonCore.Dialogue
 
     internal enum MicroscriptType
     {
-        Flag, Item, Variable, Affinity, Quest //eval is again not supported
+        Flag, Item, Variable, Affinity, Quest, ActorValue //eval is again not supported
     }
 
     internal enum MicroscriptAction
@@ -296,11 +303,11 @@ namespace CommonCore.Dialogue
                 case MicroscriptType.Item:
                     if(Action == MicroscriptAction.Give)
                     {
-                        throw new NotImplementedException(); //let's figure out how inventory will work first
+                        GameState.Instance.Player.AddItem(Target, Value);
                     }
                     else if(Action == MicroscriptAction.Take)
                     {
-                        throw new NotImplementedException(); //let's figure out how inventory will work first
+                        GameState.Instance.Player.AddItem(Target, -Value);
                     }
                     else
                     {
@@ -368,6 +375,20 @@ namespace CommonCore.Dialogue
                                 GameState.Instance.CampaignQuests[Target] = Value;
                         }
 
+                    }
+                    break;
+                case MicroscriptType.ActorValue:
+                    if (Action == MicroscriptAction.Set)
+                    {
+                        GameState.Instance.Player.SetAV<int>(Target, Value);
+                    }
+                    else if (Action == MicroscriptAction.Add)
+                    {
+                        GameState.Instance.Player.ModAV<int>(Target, Value);
+                    }
+                    else
+                    {
+                        throw new NotSupportedException();
                     }
                     break;
                 default:
