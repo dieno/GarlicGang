@@ -16,6 +16,8 @@ namespace CommonCore.Dialogue
         public Text TextMain;
         public Button[] ButtonsChoice;
         public Renderer RendererSubject;
+        public Renderer RendererBackground;
+        public AudioSource AudioMusic;
 
         private string CurrentSceneName;
         private Dictionary<string, Frame> CurrentSceneFrames;
@@ -25,9 +27,13 @@ namespace CommonCore.Dialogue
         
         void Start()
         {
-            LoadScene("coldopen"); //TODO get from gamestate
+            GameState.Instance.NextDialogue = "coldopen.matsuda1";
 
-            PresentNewFrame("matsuda1");
+            var loc = ParseLocation(GameState.Instance.NextDialogue);
+
+            LoadScene(loc.Key); //TODO get from gamestate
+
+            PresentNewFrame(loc.Value);
         }
 
         // Update is called once per frame
@@ -49,7 +55,40 @@ namespace CommonCore.Dialogue
         
         private void PresentNewFrame(Frame f) //args?
         {
-            //TODO background and music
+            //present background
+            try
+            {
+                RendererBackground.material.mainTexture = Resources.Load<Texture>("dBackgrounds/" + f.Background);
+            }
+            catch(Exception e)
+            {
+                Debug.Log(e);
+            }
+
+            //present music (will have issues with edge cases)
+            try
+            {
+                if(!string.IsNullOrEmpty(f.Music))
+                {
+                    AudioClip ac = Resources.Load<AudioClip>("DynamicMusic/" + f.Music);
+
+                    if (AudioMusic.clip != null && AudioMusic.clip.name == ac.name)
+                    {
+                        //do nothing
+                    }
+                    else
+                    {
+                        AudioMusic.clip = ac;
+                        AudioMusic.Play();
+                    }
+                }                
+            }
+            catch(Exception e)
+            {
+                Debug.Log(e);
+                AudioMusic.Stop();
+            }
+            
 
             //present cutout
             try
@@ -170,6 +209,10 @@ namespace CommonCore.Dialogue
             else if(nextLoc.Key == "meta")
             {
                 //TODO any meta ones
+                if(nextLoc.Value == "return")
+                {
+                    SceneManager.LoadScene(GameState.Instance.NextScene);
+                }
             }
             else if (nextLoc.Key == "scene")
             {
