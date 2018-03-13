@@ -27,9 +27,9 @@ namespace CommonCore.Dialogue
         
         void Start()
         {
-            GameState.Instance.NextDialogue = "intro.intro1";
+            GameState.Instance.CurrentDialogue = "intro.intro1";
 
-            var loc = ParseLocation(GameState.Instance.NextDialogue);
+            var loc = ParseLocation(GameState.Instance.CurrentDialogue);
 
             LoadScene(loc.Key);
 
@@ -211,7 +211,7 @@ namespace CommonCore.Dialogue
                 //TODO any meta ones
                 if(nextLoc.Value == "return")
                 {
-                    SceneManager.LoadScene(GameState.Instance.NextScene);
+                    SceneManager.LoadScene(GameState.Instance.CurrentScene);
                 }
             }
             else if (nextLoc.Key == "scene")

@@ -103,7 +103,7 @@ public class CharacterConfigurationController : MonoBehaviour
         }
         GameState.Save();
 
-        GameState.Instance.NextDialogue = "intro.intro1";
+        GameState.Instance.CurrentDialogue = "intro.intro1";
         SceneManager.LoadScene("DialogueScene");
     }
 }

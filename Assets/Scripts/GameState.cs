@@ -45,8 +45,8 @@ public class GameState
     
 
     //scene transition stuff
-    public string NextScene;
-    public string NextDialogue;
+    public string CurrentScene;
+    public string CurrentDialogue;
 
     public static void Save()
     {
