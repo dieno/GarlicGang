@@ -27,11 +27,11 @@ namespace CommonCore.Dialogue
         
         void Start()
         {
-            GameState.Instance.NextDialogue = "coldopen.matsuda1";
+            GameState.Instance.NextDialogue = "intro.intro1";
 
             var loc = ParseLocation(GameState.Instance.NextDialogue);
 
-            LoadScene(loc.Key); //TODO get from gamestate
+            LoadScene(loc.Key);
 
             PresentNewFrame(loc.Value);
         }
