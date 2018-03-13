@@ -6,11 +6,17 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/MainMenuScene.unity
+    guid: f1a88765185040845a197c1fc68b11a3
+  - enabled: 1
+    path: Assets/Scenes/CharacterCreationScene.unity
+    guid: 04fe75754cabc5b4d92cdb581bd9c6fb
+  - enabled: 1
     path: Assets/Scenes/MainScene.unity
     guid: 1fd0533a7ac3aae4facdfc41df940b0a
   - enabled: 1
-    path: Assets/Scenes/DialogueStrapTest.unity
-    guid: 3ecf6046d8924ae42bd829e20a7a3f3e
-  - enabled: 1
     path: Assets/Scenes/DialogueScene.unity
     guid: 186908a1a0aac3547b16d4228e10c68f
+  - enabled: 0
+    path: Assets/Scenes/DialogueStrapTest.unity
+    guid: 3ecf6046d8924ae42bd829e20a7a3f3e

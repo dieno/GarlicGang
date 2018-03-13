@@ -27,7 +27,7 @@ namespace CommonCore.Dialogue
         
         void Start()
         {
-            GameState.Instance.CurrentDialogue = "intro.intro1";
+            //GameState.Instance.CurrentDialogue = "intro.intro1";
 
             var loc = ParseLocation(GameState.Instance.CurrentDialogue);
 
