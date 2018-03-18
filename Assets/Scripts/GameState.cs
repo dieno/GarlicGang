@@ -42,9 +42,10 @@ public class GameState
     public Dictionary<string, int> CampaignVars;
     public Dictionary<string, int> CampaignQuests;
     public PlayerModel Player { get; private set; }
-    
+
 
     //scene transition stuff
+    public string LastScene;
     public string CurrentScene;
     public string CurrentDialogue;
 

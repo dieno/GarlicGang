@@ -59,7 +59,7 @@ public class PlayerControl : MonoBehaviour
 
         //mouse, use cursor position for vector
         var c = Camera.main; //TODO cache this
-        Vector3 mousePos = c.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, c.nearClipPlane));
+        Vector3 mousePos = c.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, c.nearClipPlane)); //change to raycast for 2.5D
         Vector2 fireVector = (Vector2)(mousePos - transform.position);
 
         Vector2 kbFireVector = new Vector2(Input.GetAxisRaw("Horizontal2"), Input.GetAxisRaw("Vertical2"));

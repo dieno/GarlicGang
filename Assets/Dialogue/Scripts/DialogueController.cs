@@ -211,7 +211,7 @@ namespace CommonCore.Dialogue
                 //TODO any meta ones
                 if(nextLoc.Value == "return")
                 {
-                    SceneManager.LoadScene(GameState.Instance.CurrentScene);
+                    SceneManager.LoadScene(GameState.Instance.LastScene);
                 }
             }
             else if (nextLoc.Key == "scene")
