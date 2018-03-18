@@ -101,7 +101,7 @@ public class PlayerControl : MonoBehaviour
         nextFireAvailable = Time.time + FireRate;
         //Instantiate (or Spawn) a new instance of BulletPrefab at the desired position and rotation
         //Instantiate(object to spawn, position to spawn at, rotation to be once spawned)
-        GameObject bullet = (GameObject)Instantiate(BulletPrefab, BulletSpawn.position, BulletSpawn.rotation);
+        GameObject bullet = (GameObject)Instantiate(BulletPrefab, BulletSpawn.position, BulletSpawn.rotation, transform.root);
         //Get the Rigidbody2D (Physics Component) of the bullet and set the velocity to the speed and direction that is desired.
         bullet.GetComponent<Rigidbody2D>().velocity = direction * BulletSpeed;
         //Destroy(what to destroy, when to destroy it)
