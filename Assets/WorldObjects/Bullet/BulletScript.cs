@@ -5,6 +5,7 @@ using UnityEngine;
 public class BulletScript : MonoBehaviour
 {
     public float Damage = 1.0f;
+    public float DamagePierce = 0; //DT breaking
     public GameObject HitEffect;
 
     public void Die()

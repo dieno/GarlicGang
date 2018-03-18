@@ -28,7 +28,7 @@ public class GameState
     private GameState()
     {
         // any initial setup
-        CampaignFlags = new List<string>();
+        CampaignFlags = new HashSet<string>();
         CampaignVars = new Dictionary<string, int>();
         CampaignQuests = new Dictionary<string, int>();
         Player = new PlayerModel();
@@ -39,7 +39,7 @@ public class GameState
     public int CurrentLevel;
 
     //temporary
-    public List<string> CampaignFlags; //should REALLY REALLY be a Set<string>
+    public HashSet<string> CampaignFlags; //should REALLY REALLY be a Set<string>
     public Dictionary<string, int> CampaignVars;
     public Dictionary<string, int> CampaignQuests;
     public PlayerModel Player { get; private set; }
@@ -52,7 +52,10 @@ public class GameState
 
     public static void Save()
     {
-        string json = JsonConvert.SerializeObject(instance);
+        string json = JsonConvert.SerializeObject(instance,Formatting.Indented, new JsonSerializerSettings
+        {
+            TypeNameHandling = TypeNameHandling.Auto
+        });
         string path = Application.persistentDataPath + "/save.json";
         File.WriteAllText(path, json);
     }
@@ -65,7 +68,10 @@ public class GameState
             Debug.Log("no save file exists!");
             throw new FileNotFoundException();
         }
-        instance = JsonConvert.DeserializeObject<GameState>(File.ReadAllText(path));
+        instance = JsonConvert.DeserializeObject<GameState>(File.ReadAllText(path), new JsonSerializerSettings
+        {
+            TypeNameHandling = TypeNameHandling.Auto
+        });
     }
 
     public static void Purge()

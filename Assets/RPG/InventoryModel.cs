@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -27,10 +29,17 @@ namespace CommonCore.RPG
     }
 
     //an actual inventory item that the player has
+    [JsonConverter(typeof(InventoryItemSerializer))]
     public class InventoryItemInstance
     {
         public float Condition { get; set; } //it's here but basically unimplemented
         public readonly InventoryItemModel ItemModel;
+
+        internal InventoryItemInstance(InventoryItemModel model, float condition)
+        {
+            ItemModel = model;
+            Condition = condition;
+        }
 
         public InventoryItemInstance(InventoryItemModel model)
         {
@@ -38,6 +47,37 @@ namespace CommonCore.RPG
             Condition = model.MaxCondition;
         }
     }
+
+    public class InventoryItemSerializer : JsonConverter
+    {
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            var item = value as InventoryItemInstance;
+            writer.WriteStartObject();
+            writer.WritePropertyName("Condition");
+            writer.WriteValue(item.Condition);
+            writer.WritePropertyName("$ItemModel");
+            writer.WriteValue(item.ItemModel.Name);
+            writer.WriteEndObject();
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            JObject jsonObject = JObject.Load(reader);
+            float condition = jsonObject["Condition"].Value<float>();
+            string modelName = jsonObject["$ItemModel"].Value<string>();
+            InventoryItemModel model = InventoryModel.GetModel(modelName);
+
+            return new InventoryItemInstance(model, condition);
+        }
+
+        public override bool CanConvert(Type objectType)
+        {
+            return typeof(InventoryItemInstance).IsAssignableFrom(objectType);
+        }
+    }
+
+
 
     //base class for invariant inventory items
     public abstract class InventoryItemModel
@@ -126,6 +166,8 @@ namespace CommonCore.RPG
 
     public class InventoryModel
     {
+        private static Dictionary<string, InventoryItemModel> Models;
+
         static InventoryModel()
         {
             //a stupid place to do it but we don't have a loader architecture
@@ -136,11 +178,17 @@ namespace CommonCore.RPG
         {
             //I'm too fucking lazy to actually implement a loader
             Models = new Dictionary<string, InventoryItemModel>();
+
             Models.Add("m1911", new WeaponItemModel("m1911", 3, 1.0f, false, false, 6.0f, 0, 5.0f, 0.75f, 7, 3.0f, AmmoType.Acp45, DamageType.Pierce));
             Models.Add("revolver", new WeaponItemModel("revolver", 3, 1.0f, false, false, 7.0f, 2.0f, 4.0f, 1.0f, 6, 5.0f, AmmoType.Spc38, DamageType.Pierce));
         }
 
-        private static Dictionary<string, InventoryItemModel> Models;
+        public static InventoryItemModel GetModel(string name)
+        {
+            return Models[name];
+        }
+
+        [JsonProperty]
         private List<InventoryItemInstance> Items;
         
         public InventoryModel()

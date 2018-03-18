@@ -21,7 +21,8 @@ namespace CommonCore.RPG
         public int Level { get; set; }
 
         //really need to reimplement inventory
-        public InventoryModel Inventory;
+        [JsonProperty]
+        private InventoryModel Inventory;
 
 
         public PlayerModel()

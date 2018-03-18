@@ -273,11 +273,10 @@ namespace CommonCore.Dialogue
                 case MicroscriptType.Flag:
                     if(Action == MicroscriptAction.Toggle)
                     {
-                        int idx = GameState.Instance.CampaignFlags.IndexOf(Target);
-                        if (idx < 0)
-                            GameState.Instance.CampaignFlags.Add(Target);
+                        if (GameState.Instance.CampaignFlags.Contains(Target))
+                            GameState.Instance.CampaignFlags.Remove(Target);
                         else
-                            GameState.Instance.CampaignFlags.RemoveAt(idx);
+                            GameState.Instance.CampaignFlags.Add(Target);
                     }
                     else if (Action == MicroscriptAction.Set)
                     {

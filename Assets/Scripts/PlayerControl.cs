@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using CommonCore.RPG;
+using Newtonsoft.Json;
 
 public class PlayerControl : MonoBehaviour
 {
@@ -15,9 +17,16 @@ public class PlayerControl : MonoBehaviour
     public Transform BulletSpawn;
     [SerializeField] public float BulletSpeed = 6.0f;
     [SerializeField] public float BulletLifetime = 2.0f;
+    [SerializeField] public float BulletDamage = 2.0f;
+    [SerializeField] public float BulletPierce = 0;
+    [SerializeField] public float BulletSpread = 2.0f;
     [SerializeField] public float FireRate = 0.5f;
-    [SerializeField] public float StickAimDeadzone = 0.1f;
-    [SerializeField] public float StickFireDeadzone = 0.25f;
+    [SerializeField] public int MagazineCapacity = 5;
+    [SerializeField] public float MagazineReloadTime = 2.0f;
+
+    [Header("Aiming Stuff")]
+    public float StickAimDeadzone = 0.1f;
+    public float StickFireDeadzone = 0.25f;
 
     private Rigidbody2D rb;
     private Vector2 movementVec;
@@ -33,9 +42,42 @@ public class PlayerControl : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+
+        PickWeapon();
+        
+
     }
 
-	// Update is called once per frame
+    private void PickWeapon()
+    {
+        WeaponItemModel wim;
+
+        //get the weapon the player actually has, the shittiest way possible
+        if(GameState.Instance.Player.CountItem("m1911") > 0)
+        {
+            wim = (WeaponItemModel)InventoryModel.GetModel("m1911");
+        }
+        else if(GameState.Instance.Player.CountItem("revolver") > 0)
+        {
+            wim = (WeaponItemModel)InventoryModel.GetModel("revolver");
+        }
+        else
+        {
+            Debug.LogWarning("The player apparently has no fucking weapons");
+            return;
+        }
+
+        Debug.Log(JsonConvert.SerializeObject(wim));
+
+        BulletDamage = wim.Damage;
+        BulletPierce = wim.DamagePierce;
+        BulletSpread = wim.Spread;
+        FireRate = wim.FireRate;
+        MagazineCapacity = wim.MagazineSize;
+        MagazineReloadTime = wim.ReloadTime;
+    }
+
+    // Update is called once per frame
     void FixedUpdate()
     {
         MovementControl();
