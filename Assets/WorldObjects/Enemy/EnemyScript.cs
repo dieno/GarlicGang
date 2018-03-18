@@ -7,6 +7,8 @@ public class EnemyScript : MonoBehaviour
 {
     public UnityEvent DestroyEvent; //should we extend UnityEvent? ARES does
     public GameObject DestroyEffect;
+    public float DamageThreshold = 0;
+    public float DamageResistance = 0;
     public float MaxHealth = 1.0f;
 
 
@@ -22,7 +24,7 @@ public class EnemyScript : MonoBehaviour
         var bs = collision.gameObject.GetComponent<BulletScript>();
         if(bs != null)
         {
-            Health -= bs.Damage;
+            Health -= DamageUtil.CalculateDamage(bs.Damage, bs.DamagePierce, DamageThreshold, DamageResistance);
             bs.Die();
             CheckIfDead();
         }

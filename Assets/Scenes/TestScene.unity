@@ -574,7 +574,12 @@ MonoBehaviour:
   BulletSpawn: {fileID: 2140513079}
   BulletSpeed: 25
   BulletLifetime: 2
+  BulletDamage: 2
+  BulletPierce: 0
+  BulletSpread: 2
   FireRate: 0.5
+  MagazineCapacity: 5
+  MagazineReloadTime: 2
   StickAimDeadzone: 0.1
   StickFireDeadzone: 0.25
   gameOverScene: {fileID: 0}
@@ -730,6 +735,7 @@ Transform:
   - {fileID: 984760582}
   - {fileID: 1669762233}
   - {fileID: 991809998}
+  - {fileID: 1852585831}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1131,6 +1137,82 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
+--- !u!1001 &1852585830
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1143882050}
+    m_Modifications:
+    - target: {fileID: 4010671690775056, guid: b24d0cf7587b6ae45b82c55c400743c2, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 27.54
+      objectReference: {fileID: 0}
+    - target: {fileID: 4010671690775056, guid: b24d0cf7587b6ae45b82c55c400743c2, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4010671690775056, guid: b24d0cf7587b6ae45b82c55c400743c2, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4010671690775056, guid: b24d0cf7587b6ae45b82c55c400743c2, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4010671690775056, guid: b24d0cf7587b6ae45b82c55c400743c2, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4010671690775056, guid: b24d0cf7587b6ae45b82c55c400743c2, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4010671690775056, guid: b24d0cf7587b6ae45b82c55c400743c2, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4010671690775056, guid: b24d0cf7587b6ae45b82c55c400743c2, type: 2}
+      propertyPath: m_RootOrder
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1913955472854494, guid: b24d0cf7587b6ae45b82c55c400743c2, type: 2}
+      propertyPath: m_Name
+      value: TestEnemy (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 212072205202541068, guid: b24d0cf7587b6ae45b82c55c400743c2,
+        type: 2}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 212072205202541068, guid: b24d0cf7587b6ae45b82c55c400743c2,
+        type: 2}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 212072205202541068, guid: b24d0cf7587b6ae45b82c55c400743c2,
+        type: 2}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114442500613019606, guid: b24d0cf7587b6ae45b82c55c400743c2,
+        type: 2}
+      propertyPath: DamageThreshold
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114442500613019606, guid: b24d0cf7587b6ae45b82c55c400743c2,
+        type: 2}
+      propertyPath: DamageResistance
+      value: 5
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: b24d0cf7587b6ae45b82c55c400743c2, type: 2}
+  m_IsPrefabParent: 0
+--- !u!4 &1852585831 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 4010671690775056, guid: b24d0cf7587b6ae45b82c55c400743c2,
+    type: 2}
+  m_PrefabInternal: {fileID: 1852585830}
 --- !u!1 &2140513078
 GameObject:
   m_ObjectHideFlags: 0

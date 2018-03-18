@@ -146,6 +146,9 @@ public class PlayerControl : MonoBehaviour
         GameObject bullet = (GameObject)Instantiate(BulletPrefab, BulletSpawn.position, BulletSpawn.rotation, transform.root);
         //Get the Rigidbody2D (Physics Component) of the bullet and set the velocity to the speed and direction that is desired.
         bullet.GetComponent<Rigidbody2D>().velocity = direction * BulletSpeed;
+        var bs = bullet.GetComponent<BulletScript>();
+        bs.Damage = BulletDamage;
+        bs.DamagePierce = BulletPierce;
         //Destroy(what to destroy, when to destroy it)
         Destroy(bullet, BulletLifetime); //oh yeah I forgot that was a thing
     }
