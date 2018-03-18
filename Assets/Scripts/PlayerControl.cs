@@ -16,11 +16,14 @@ public class PlayerControl : MonoBehaviour
     [SerializeField] public float BulletSpeed = 6.0f;
     [SerializeField] public float BulletLifetime = 2.0f;
     [SerializeField] public float FireRate = 0.5f;
+    [SerializeField] public float StickAimDeadzone = 0.1f;
+    [SerializeField] public float StickFireDeadzone = 0.25f;
 
     private Rigidbody2D rb;
     private Vector2 movementVec;
 
     private float nextFireAvailable;
+    private bool LastAimedWithStick; //gross hack to make controller and mouse look okay
 
 
     public GameObject gameOverScene;
@@ -51,36 +54,44 @@ public class PlayerControl : MonoBehaviour
     void ShootControl()
     {
         //When the time is past the next fire available time handle the shooting controls
+
+        //shitty, tired hacky-but-it-works code
+
+        //mouse, use cursor position for vector
+        var c = Camera.main; //TODO cache this
+        Vector3 mousePos = c.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, c.nearClipPlane));
+        Vector2 fireVector = (Vector2)(mousePos - transform.position);
+
+        Vector2 kbFireVector = new Vector2(Input.GetAxisRaw("Horizontal2"), Input.GetAxisRaw("Vertical2"));
+        if (kbFireVector.magnitude >= StickAimDeadzone)
+        {
+            LastAimedWithStick = true;
+            fireVector = kbFireVector;
+            RotateMeToVector(fireVector);
+        }            
+        else if(Input.GetMouseButton(0))
+        {
+            LastAimedWithStick = false;
+        }
+
+        if(!LastAimedWithStick)
+            RotateMeToVector(fireVector);
+
         if (Time.time > nextFireAvailable)
         {
-            //If the keyboard press is the right arrow key
-            if (Input.GetKey(KeyCode.RightArrow))
+            if(kbFireVector.magnitude >= StickFireDeadzone || Input.GetButton("Fire1"))
             {
-                //Fire a bullet in the direction of the right of the transform object
-                Fire(transform.right);
+                Fire(fireVector.normalized);
             }
-            //If the keyboard press is the left arrow key
-            else if (Input.GetKey(KeyCode.LeftArrow))
-            {
-                //Fire a bullet in the direction of the left of the transform object
-                //or negative of the right direction (opposite)
-                Fire(-transform.right);
-            }
-            //If the keyboard press is the up arrow key
-            else if (Input.GetKey(KeyCode.UpArrow))
-            {
-                //Fire a bullet in the direction of the up the transform object
-                Fire(transform.up);
-            }
-            //If the keyboard press is the down arrow key
-            else if (Input.GetKey(KeyCode.DownArrow))
-            {
-                //Fire a bullet in the direction of the down of the transform object
-                //or negative of the up direction (opposite)
-                Fire(-transform.up);
-            }
+                
         }
     
+    }
+
+    private void RotateMeToVector(Vector2 dir)
+    {
+        float angle = Vector2.SignedAngle(transform.up, dir);
+        transform.Rotate(Vector3.forward, angle);
     }
 
     void Fire(Vector3 direction)
@@ -90,11 +101,11 @@ public class PlayerControl : MonoBehaviour
         nextFireAvailable = Time.time + FireRate;
         //Instantiate (or Spawn) a new instance of BulletPrefab at the desired position and rotation
         //Instantiate(object to spawn, position to spawn at, rotation to be once spawned)
-        //GameObject bullet = (GameObject)Instantiate(BulletPrefab, BulletSpawn.position, BulletSpawn.rotation);
+        GameObject bullet = (GameObject)Instantiate(BulletPrefab, BulletSpawn.position, BulletSpawn.rotation);
         //Get the Rigidbody2D (Physics Component) of the bullet and set the velocity to the speed and direction that is desired.
-        //bullet.GetComponent<Rigidbody2D>().velocity = direction * BulletSpeed;
+        bullet.GetComponent<Rigidbody2D>().velocity = direction * BulletSpeed;
         //Destroy(what to destroy, when to destroy it)
-        //Destroy(bullet, BulletLifetime);
+        Destroy(bullet, BulletLifetime); //oh yeah I forgot that was a thing
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -106,7 +117,7 @@ public class PlayerControl : MonoBehaviour
             if (lives <= 0)
             {
                 Debug.Log("Game Over");
-                gameOverScene.SetActive(true);
+                gameOverScene.SetActive(true); //TODO make this signal a gamecontroller, preferably using messaging, because I mean DAMN
             }
         }
     }
