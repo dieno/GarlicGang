@@ -119,10 +119,11 @@ namespace CommonCore.RPG
         public readonly AmmoType AType;
         public readonly DamageType DType;
         public readonly string FireEffect;
+        public readonly string ReloadEffect;
 
         public WeaponItemModel(string name, float weight, float maxCondition, bool unique, bool essential,
             float damage, float damagePierce, float velocity, float spread, float fireRate,
-            int magazineSize, float reloadTime, AmmoType aType, DamageType dType, string fireEffect)
+            int magazineSize, float reloadTime, AmmoType aType, DamageType dType, string fireEffect, string reloadEffect)
             : base(name, weight, maxCondition, unique, essential)
         {
             Damage = damage;
@@ -135,6 +136,7 @@ namespace CommonCore.RPG
             AType = aType;
             DType = dType;
             FireEffect = fireEffect;
+            ReloadEffect = reloadEffect;
         }
     }
 
@@ -183,8 +185,8 @@ namespace CommonCore.RPG
             //I'm too fucking lazy to actually implement a loader
             Models = new Dictionary<string, InventoryItemModel>();
 
-            Models.Add("m1911", new WeaponItemModel("m1911", 3, 1.0f, false, false, 6.0f, 0, 70f, 5.0f, 0.75f, 7, 3.0f, AmmoType.Acp45, DamageType.Pierce, "PistolEffect"));
-            Models.Add("revolver", new WeaponItemModel("revolver", 3, 1.0f, false, false, 7.0f, 2.0f, 70f, 4.0f, 1.0f, 6, 5.0f, AmmoType.Spc38, DamageType.Pierce, "RevolverEffect"));
+            Models.Add("m1911", new WeaponItemModel("m1911", 3, 1.0f, false, false, 6.0f, 0, 70f, 5.0f, 0.75f, 7, 3.0f, AmmoType.Acp45, DamageType.Pierce, "PistolEffect", "ReloadNormal"));
+            Models.Add("revolver", new WeaponItemModel("revolver", 3, 1.0f, false, false, 7.0f, 2.0f, 70f, 4.0f, 1.0f, 6, 5.0f, AmmoType.Spc38, DamageType.Pierce, "RevolverEffect", "ReloadRevolver"));
         }
 
         public static InventoryItemModel GetModel(string name)

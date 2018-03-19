@@ -9,7 +9,6 @@ public class PlayerControl : MonoBehaviour
     [Header("Player Attributes")]
     [SerializeField]
     public float speed = 1.0f;
-    public int lives = 3;
 
     [Header("Bullet Attributes")]
     public GameObject BulletPrefab;
@@ -23,6 +22,7 @@ public class PlayerControl : MonoBehaviour
     [SerializeField] public int MagazineCapacity = 5;
     [SerializeField] public float MagazineReloadTime = 2.0f;
     public GameObject FireEffectPrefab;
+    public GameObject ReloadEffectPrefab;
 
     [Header("Aiming Stuff")]
     public float StickAimDeadzone = 0.1f;
@@ -49,7 +49,7 @@ public class PlayerControl : MonoBehaviour
 
         PickWeapon();
         BulletsInMagazine = MagazineCapacity;
-
+        WorldHUDController.Instance.UpdateAmmo(BulletsInMagazine);
     }
 
     private void PickWeapon()
@@ -81,14 +81,18 @@ public class PlayerControl : MonoBehaviour
         MagazineCapacity = wim.MagazineSize;
         MagazineReloadTime = wim.ReloadTime;
         FireEffectPrefab = Resources.Load<GameObject>("GunEffect/" + wim.FireEffect);
+        ReloadEffectPrefab = Resources.Load<GameObject>("ReloadEffect/" + wim.ReloadEffect);
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void Update() //you can't use FixedUpdate if you want your controls not to be shit, Ryan
     {
         MovementControl();
         ShootControl();
+
+        WorldHUDController.Instance.UpdateHealth(GameState.Instance.Player.Health); //fuck it
     }
+
 
     void MovementControl()
     {
@@ -102,6 +106,14 @@ public class PlayerControl : MonoBehaviour
     void ShootControl()
     {
         //When the time is past the next fire available time handle the shooting controls
+
+        //handle reloading
+        if (BulletsInMagazine < 0 && Time.time > nextFireAvailable)
+        {
+            //reload is done
+            BulletsInMagazine = MagazineCapacity;
+            WorldHUDController.Instance.UpdateAmmo(BulletsInMagazine);
+        }
 
         //shitty, tired hacky-but-it-works code
 
@@ -143,11 +155,6 @@ public class PlayerControl : MonoBehaviour
 
     void Fire(Vector3 direction)
     {
-        if(BulletsInMagazine < 0)
-        {
-            //reload is done
-            BulletsInMagazine = MagazineCapacity;
-        }
 
         //a stupid hacky way of doing bullet spread
         direction = Quaternion.Euler(0, 0, Random.Range(-BulletSpread, BulletSpread) / 2f) * direction;
@@ -171,10 +178,14 @@ public class PlayerControl : MonoBehaviour
         Destroy(bullet, BulletLifetime); //oh yeah I forgot that was a thing
 
         BulletsInMagazine--;
+        WorldHUDController.Instance.UpdateAmmo(BulletsInMagazine);
 
-        if(BulletsInMagazine == 0)
+        if (BulletsInMagazine == 0)
         {
             //play reload effect
+            if (ReloadEffectPrefab != null)
+                Instantiate<GameObject>(ReloadEffectPrefab, BulletSpawn.position, BulletSpawn.rotation).transform.SetParent(BulletSpawn); //hacks!
+            
             nextFireAvailable = Time.time + MagazineReloadTime;
             BulletsInMagazine = -1; //stupid and hacky
         }
@@ -188,9 +199,10 @@ public class PlayerControl : MonoBehaviour
     {
         if(collision.gameObject.tag == "Bullet")
         {
-            lives--;
+            int bulletDamage = 1; //TODO get from bullet
+            GameState.Instance.Player.Health -= bulletDamage;
             //gameUI.GetComponent<HealthUI>().LoseHealth();
-            if (lives <= 0)
+            if (GameState.Instance.Player.Health <= 0)
             {
                 Debug.Log("Game Over");
                 gameOverScene.SetActive(true); //TODO make this signal a gamecontroller, preferably using messaging, because I mean DAMN
