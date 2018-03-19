@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using CommonCore.RPG;
-using Newtonsoft.Json;
 
 public class PlayerControl : MonoBehaviour
 {
@@ -23,28 +22,33 @@ public class PlayerControl : MonoBehaviour
     [SerializeField] public float FireRate = 0.5f;
     [SerializeField] public int MagazineCapacity = 5;
     [SerializeField] public float MagazineReloadTime = 2.0f;
+    public GameObject FireEffectPrefab;
 
     [Header("Aiming Stuff")]
     public float StickAimDeadzone = 0.1f;
     public float StickFireDeadzone = 0.25f;
+
+    public Camera MainCamera;
+    public GameObject gameOverScene; //the fuck?
+    public GameObject gameUI;
 
     private Rigidbody2D rb;
     private Vector2 movementVec;
 
     private float nextFireAvailable;
     private bool LastAimedWithStick; //gross hack to make controller and mouse look okay
-
-
-    public GameObject gameOverScene;
-    public GameObject gameUI;
+    private int BulletsInMagazine;    
 
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
 
+        if (MainCamera == null)
+            MainCamera = Camera.main;
+
         PickWeapon();
-        
+        BulletsInMagazine = MagazineCapacity;
 
     }
 
@@ -67,14 +71,16 @@ public class PlayerControl : MonoBehaviour
             return;
         }
 
-        Debug.Log(JsonConvert.SerializeObject(wim));
+        //Debug.Log(JsonConvert.SerializeObject(wim));
 
+        BulletSpeed = wim.Velocity;
         BulletDamage = wim.Damage;
         BulletPierce = wim.DamagePierce;
         BulletSpread = wim.Spread;
         FireRate = wim.FireRate;
         MagazineCapacity = wim.MagazineSize;
         MagazineReloadTime = wim.ReloadTime;
+        FireEffectPrefab = Resources.Load<GameObject>("GunEffect/" + wim.FireEffect);
     }
 
     // Update is called once per frame
@@ -100,8 +106,7 @@ public class PlayerControl : MonoBehaviour
         //shitty, tired hacky-but-it-works code
 
         //mouse, use cursor position for vector
-        var c = Camera.main; //TODO cache this
-        Vector3 mousePos = c.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, c.nearClipPlane)); //change to raycast for 2.5D
+        Vector3 mousePos = MainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, MainCamera.nearClipPlane)); //change to raycast for 2.5D
         Vector2 fireVector = (Vector2)(mousePos - transform.position);
 
         Vector2 kbFireVector = new Vector2(Input.GetAxisRaw("Horizontal2"), Input.GetAxisRaw("Vertical2"));
@@ -138,19 +143,45 @@ public class PlayerControl : MonoBehaviour
 
     void Fire(Vector3 direction)
     {
+        if(BulletsInMagazine < 0)
+        {
+            //reload is done
+            BulletsInMagazine = MagazineCapacity;
+        }
+
+        //a stupid hacky way of doing bullet spread
+        direction = Quaternion.Euler(0, 0, Random.Range(-BulletSpread, BulletSpread) / 2f) * direction;
+
         //Set the time that the bullet can be shot again 
         //Time.time(current time) + the fire rate (the delay from the time you've shot)
         nextFireAvailable = Time.time + FireRate;
+
         //Instantiate (or Spawn) a new instance of BulletPrefab at the desired position and rotation
         //Instantiate(object to spawn, position to spawn at, rotation to be once spawned)
         GameObject bullet = (GameObject)Instantiate(BulletPrefab, BulletSpawn.position, BulletSpawn.rotation, transform.root);
         //Get the Rigidbody2D (Physics Component) of the bullet and set the velocity to the speed and direction that is desired.
         bullet.GetComponent<Rigidbody2D>().velocity = direction * BulletSpeed;
+
+        //set bullet vars
         var bs = bullet.GetComponent<BulletScript>();
         bs.Damage = BulletDamage;
         bs.DamagePierce = BulletPierce;
+
         //Destroy(what to destroy, when to destroy it)
         Destroy(bullet, BulletLifetime); //oh yeah I forgot that was a thing
+
+        BulletsInMagazine--;
+
+        if(BulletsInMagazine == 0)
+        {
+            //play reload effect
+            nextFireAvailable = Time.time + MagazineReloadTime;
+            BulletsInMagazine = -1; //stupid and hacky
+        }
+
+        //also do the effect
+        if(FireEffectPrefab != null)
+            Instantiate(FireEffectPrefab, BulletSpawn.position, BulletSpawn.rotation, BulletSpawn.transform);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

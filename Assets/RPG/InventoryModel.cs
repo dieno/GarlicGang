@@ -111,26 +111,30 @@ namespace CommonCore.RPG
     {
         public readonly float Damage;
         public readonly float DamagePierce;
+        public readonly float Velocity;
         public readonly float Spread;
         public readonly float FireRate;
         public readonly int MagazineSize;
         public readonly float ReloadTime;
         public readonly AmmoType AType;
         public readonly DamageType DType;
+        public readonly string FireEffect;
 
         public WeaponItemModel(string name, float weight, float maxCondition, bool unique, bool essential,
-            float damage, float damagePierce, float spread, float fireRate,
-            int magazineSize, float reloadTime, AmmoType aType, DamageType dType)
+            float damage, float damagePierce, float velocity, float spread, float fireRate,
+            int magazineSize, float reloadTime, AmmoType aType, DamageType dType, string fireEffect)
             : base(name, weight, maxCondition, unique, essential)
         {
             Damage = damage;
             DamagePierce = damagePierce;
+            Velocity = velocity;
             Spread = spread;
             FireRate = fireRate;
             MagazineSize = magazineSize;
             ReloadTime = reloadTime;
             AType = aType;
             DType = dType;
+            FireEffect = fireEffect;
         }
     }
 
@@ -179,8 +183,8 @@ namespace CommonCore.RPG
             //I'm too fucking lazy to actually implement a loader
             Models = new Dictionary<string, InventoryItemModel>();
 
-            Models.Add("m1911", new WeaponItemModel("m1911", 3, 1.0f, false, false, 6.0f, 0, 5.0f, 0.75f, 7, 3.0f, AmmoType.Acp45, DamageType.Pierce));
-            Models.Add("revolver", new WeaponItemModel("revolver", 3, 1.0f, false, false, 7.0f, 2.0f, 4.0f, 1.0f, 6, 5.0f, AmmoType.Spc38, DamageType.Pierce));
+            Models.Add("m1911", new WeaponItemModel("m1911", 3, 1.0f, false, false, 6.0f, 0, 70f, 5.0f, 0.75f, 7, 3.0f, AmmoType.Acp45, DamageType.Pierce, "PistolEffect"));
+            Models.Add("revolver", new WeaponItemModel("revolver", 3, 1.0f, false, false, 7.0f, 2.0f, 70f, 4.0f, 1.0f, 6, 5.0f, AmmoType.Spc38, DamageType.Pierce, "RevolverEffect"));
         }
 
         public static InventoryItemModel GetModel(string name)
