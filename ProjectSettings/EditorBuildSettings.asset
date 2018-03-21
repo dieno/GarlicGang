@@ -20,3 +20,12 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/DialogueStrapTest.unity
     guid: 3ecf6046d8924ae42bd829e20a7a3f3e
+  - enabled: 1
+    path: Assets/Scenes/EnemyTestScene.unity
+    guid: d6c4dee4e300cd244a7d2013503b58f5
+  - enabled: 1
+    path: Assets/Scenes/TestScene.unity
+    guid: c0791d9df65ab5142be7b2aedf35db67
+  - enabled: 1
+    path: Assets/Scenes/PlaneCrashScene.unity
+    guid: 3b2375c203a714346b5f0abffed491de
