@@ -197,7 +197,8 @@ public class PlayerControl : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.gameObject.tag == "Bullet")
+        var bs = collision.gameObject.GetComponent<BulletScript>();
+        if (bs != null)
         {
             int bulletDamage = 1; //TODO get from bullet
             GameState.Instance.Player.Health -= bulletDamage;
@@ -207,6 +208,7 @@ public class PlayerControl : MonoBehaviour
                 Debug.Log("Game Over");
                 gameOverScene.SetActive(true); //TODO make this signal a gamecontroller, preferably using messaging, because I mean DAMN
             }
+            Destroy(collision.gameObject);
         }
     }
 }
