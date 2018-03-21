@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 //loosely based on the FSVR base controller
 public abstract class BaseSceneController : MonoBehaviour
 {
-
+    public bool AutorestoreLocation = false;
     public bool SaveOnLoad = false;
     public bool SaveOnExit = true;
     public int Morality;
@@ -35,6 +35,13 @@ public abstract class BaseSceneController : MonoBehaviour
         if (SaveOnLoad)
         {
             SaveGame(SceneManager.GetActiveScene().name);
+        }
+
+        if(AutorestoreLocation && GameState.Instance.OverridePosition.HasValue)
+        {
+            var player = GameObject.Find("Player");
+            player.transform.position = GameState.Instance.OverridePosition.Value;
+            player.transform.rotation = GameState.Instance.OverrideRotation.Value;
         }
     }
 

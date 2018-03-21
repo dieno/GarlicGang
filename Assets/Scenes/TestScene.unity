@@ -642,7 +642,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 100
-  lives: 3
   BulletPrefab: {fileID: 1424906035088890, guid: 28b9796bd7df94b4d8f2139bbb77da6c,
     type: 2}
   BulletSpawn: {fileID: 2140513079}
@@ -986,6 +985,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81daee8ba75937849a294ca936ed0ed6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AutorestoreLocation: 1
   SaveOnLoad: 0
   SaveOnExit: 1
   Morality: 0
