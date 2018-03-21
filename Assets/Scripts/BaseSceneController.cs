@@ -31,6 +31,7 @@ public abstract class BaseSceneController : MonoBehaviour
     // Use this for initialization
     public virtual void Start()
     {
+        GameState.Instance.CurrentScene = SceneManager.GetActiveScene().name;
 
         if (SaveOnLoad)
         {

@@ -127,7 +127,7 @@
       "type": "text",
       "image": "vacuum",
       "nameText": "J.E. Vacuumcleaner",
-      "next": "scene.PostIntroScene",
+      "next": "scene.PlaneCrashScene",
       "text": "Ever been on an aeroplane before? Time is of the essence, so you'll be leaving tonight. "
     }
   }
