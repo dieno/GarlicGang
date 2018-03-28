@@ -5,6 +5,13 @@ using CommonCore.RPG;
 
 public class PlayerControl : MonoBehaviour
 {
+    public static PlayerControl Instance
+    {
+        get
+        {
+            return GameObject.Find("Player").GetComponent<PlayerControl>();
+        }
+    }
 
     [Header("Player Attributes")]
     [SerializeField]
@@ -38,6 +45,7 @@ public class PlayerControl : MonoBehaviour
     private float nextFireAvailable;
     private bool LastAimedWithStick; //gross hack to make controller and mouse look okay
     public int BulletsInMagazine { get; private set; }  
+    public string EquippedWeapon { get; private set; }
 
 
     void Start()
@@ -82,6 +90,8 @@ public class PlayerControl : MonoBehaviour
         MagazineReloadTime = wim.ReloadTime;
         FireEffectPrefab = Resources.Load<GameObject>("GunEffect/" + wim.FireEffect);
         ReloadEffectPrefab = Resources.Load<GameObject>("ReloadEffect/" + wim.ReloadEffect);
+
+        EquippedWeapon = wim.Name;
     }
 
     // Update is called once per frame
