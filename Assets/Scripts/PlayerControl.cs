@@ -37,7 +37,7 @@ public class PlayerControl : MonoBehaviour
 
     private float nextFireAvailable;
     private bool LastAimedWithStick; //gross hack to make controller and mouse look okay
-    private int BulletsInMagazine;    
+    public int BulletsInMagazine { get; private set; }  
 
 
     void Start()
@@ -49,7 +49,7 @@ public class PlayerControl : MonoBehaviour
 
         PickWeapon();
         BulletsInMagazine = MagazineCapacity;
-        WorldHUDController.Instance.UpdateAmmo(BulletsInMagazine);
+        //WorldHUDController.Instance.UpdateAmmo(BulletsInMagazine);
     }
 
     private void PickWeapon()
@@ -90,7 +90,7 @@ public class PlayerControl : MonoBehaviour
         MovementControl();
         ShootControl();
 
-        WorldHUDController.Instance.UpdateHealth(GameState.Instance.Player.Health); //fuck it
+        //WorldHUDController.Instance.UpdateHealth(GameState.Instance.Player.Health); //fuck it
     }
 
 
@@ -112,7 +112,7 @@ public class PlayerControl : MonoBehaviour
         {
             //reload is done
             BulletsInMagazine = MagazineCapacity;
-            WorldHUDController.Instance.UpdateAmmo(BulletsInMagazine);
+            //WorldHUDController.Instance.UpdateAmmo(BulletsInMagazine);
         }
 
         //shitty, tired hacky-but-it-works code
@@ -178,7 +178,7 @@ public class PlayerControl : MonoBehaviour
         Destroy(bullet, BulletLifetime); //oh yeah I forgot that was a thing
 
         BulletsInMagazine--;
-        WorldHUDController.Instance.UpdateAmmo(BulletsInMagazine);
+        //WorldHUDController.Instance.UpdateAmmo(BulletsInMagazine);
 
         if (BulletsInMagazine == 0)
         {
