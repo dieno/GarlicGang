@@ -487,8 +487,8 @@ Camera:
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
-  m_HDR: 1
-  m_AllowMSAA: 1
+  m_HDR: 0
+  m_AllowMSAA: 0
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
@@ -677,7 +677,7 @@ Transform:
   m_GameObject: {fileID: 984760580}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 25, y: 25, z: 1}
+  m_LocalScale: {x: 25, y: 25, z: 2}
   m_Children:
   - {fileID: 508183360}
   m_Father: {fileID: 1143882050}
@@ -1049,6 +1049,7 @@ Transform:
   - {fileID: 1669762233}
   - {fileID: 991809998}
   - {fileID: 1852585831}
+  - {fileID: 1159011914}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1068,6 +1069,80 @@ MonoBehaviour:
   Morality: 0
   Reputation: 0
   Flags: []
+--- !u!1 &1159011913
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1159011914}
+  - component: {fileID: 1159011915}
+  m_Layer: 0
+  m_Name: LevelManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1159011914
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1159011913}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1143882050}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1159011915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1159011913}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fff182172d726402b9e9eacdb89c9724, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  columns: 16
+  rows: 35
+  wallCount:
+    minimum: 5
+    maximum: 9
+  foodCount:
+    minimum: 1
+    maximum: 5
+  exit: {fileID: 0}
+  floorTiles:
+  - {fileID: 1641631489762192, guid: f092c4b88182c2944ae89d33d8cdd847, type: 2}
+  wallTiles: []
+  foodTiles: []
+  enemyTiles: []
+  outerWallTiles: []
+  floorTile: {fileID: 1641631489762192, guid: f092c4b88182c2944ae89d33d8cdd847, type: 2}
+  topLeftWallTile: {fileID: 1993359327206422, guid: c25488b5cae8f484ab135934bd0fea7e,
+    type: 2}
+  topRightWallTile: {fileID: 1062467697377870, guid: 7ea30494875a85c47a0793d8e0e06d09,
+    type: 2}
+  bottomLeftWallTile: {fileID: 1978161832484224, guid: 412654d00d015d54aa1dca74b944531e,
+    type: 2}
+  bottomRightWallTile: {fileID: 1747846727022318, guid: d0deb50d3acbed545bd60b067f60f84c,
+    type: 2}
+  leftWallTile: {fileID: 1437395215829298, guid: 152a094e2e2ab0140b60dae9e4470739,
+    type: 2}
+  rightWallTile: {fileID: 1437395215829298, guid: 152a094e2e2ab0140b60dae9e4470739,
+    type: 2}
+  topWallTile: {fileID: 1783667137540418, guid: 9da04420160a55541806e5dd15311d50,
+    type: 2}
+  bottomWallTile: {fileID: 1783667137540418, guid: 9da04420160a55541806e5dd15311d50,
+    type: 2}
+  tileScaleX: 4
+  tileScaleY: 4
 --- !u!1001 &1174178649
 Prefab:
   m_ObjectHideFlags: 0
@@ -1125,7 +1200,7 @@ Prefab:
     - target: {fileID: 114442500613019606, guid: b24d0cf7587b6ae45b82c55c400743c2,
         type: 2}
       propertyPath: BulletSpeed
-      value: 70
+      value: 25
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b24d0cf7587b6ae45b82c55c400743c2, type: 2}
@@ -1318,7 +1393,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1662684305
 Transform:
   m_ObjectHideFlags: 0
@@ -1390,7 +1465,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1669762233
 Transform:
   m_ObjectHideFlags: 0

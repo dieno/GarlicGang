@@ -7,6 +7,7 @@ public class EnemyScript : MonoBehaviour
 {
     public UnityEvent DestroyEvent; //should we extend UnityEvent? ARES does
     public GameObject DestroyEffect;
+    public GameObject FireEffectPrefab;
     public float DamageThreshold = 0;
     public float DamageResistance = 0;
     public float MaxHealth = 1.0f;
@@ -34,6 +35,7 @@ public class EnemyScript : MonoBehaviour
         Health = MaxHealth;
         rb = GetComponent<Rigidbody2D>();
         target = GameObject.Find("Player").transform;
+        FireEffectPrefab = Resources.Load<GameObject>("GunEffect/RevolverEffect");
     }
 
     void FixedUpdate()
@@ -89,6 +91,10 @@ public class EnemyScript : MonoBehaviour
         {
             //Shoot at the players direction
             Fire(directionVector.normalized);
+
+            //also do the effect
+            if (FireEffectPrefab != null)
+                Instantiate(FireEffectPrefab, BulletSpawn.position, BulletSpawn.rotation, BulletSpawn.transform);
         }
     }
 
