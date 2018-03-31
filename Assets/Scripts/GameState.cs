@@ -36,10 +36,11 @@ public class GameState
 
     //actual state data
     public bool InCampaign;
+    public bool SaveLocked;
     public int CurrentLevel;
 
     //temporary
-    public HashSet<string> CampaignFlags; //should REALLY REALLY be a Set<string>
+    public HashSet<string> CampaignFlags;
     public Dictionary<string, int> CampaignVars;
     public Dictionary<string, int> CampaignQuests;
     public PlayerModel Player { get; private set; }

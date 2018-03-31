@@ -89,6 +89,11 @@ namespace CommonCore.UI
 
         public void OnClickSelectButton(string menuName)
         {
+            foreach(Transform child in ContainerPanel.transform)
+            {
+                child.gameObject.SetActive(false);
+            }
+
             try
             {
                 var childPanel = ContainerPanel.transform.Find(menuName);

@@ -20,12 +20,13 @@ namespace CommonCore.RPG
 
     public enum AidType //are there even any other stats?
     {
-        Health
+        Health, Armor
     }
 
     public enum RestoreType
     {
-        Add, Boost //boost allows going over max, add does not
+        Add, Boost, //boost allows going over max, add does not
+        Override //override replaces
     }
 
     //an actual inventory item that the player has
@@ -77,7 +78,20 @@ namespace CommonCore.RPG
         }
     }
 
+    // class for invariant inventory defs
+    public class InventoryItemDef
+    {
+        public readonly string NiceName;
+        public readonly string Image;
+        public readonly string Description;
 
+        public InventoryItemDef(string niceName, string image, string description)
+        {
+            NiceName = niceName;
+            Image = image;
+            Description = description;
+        }
+    }
 
     //base class for invariant inventory items
     public abstract class InventoryItemModel
@@ -178,6 +192,7 @@ namespace CommonCore.RPG
         {
             //a stupid place to do it but we don't have a loader architecture
             LoadAllModels();
+            LoadAllDefs();
         }
 
         private static void LoadAllModels()
@@ -187,6 +202,17 @@ namespace CommonCore.RPG
 
             Models.Add("m1911", new WeaponItemModel("m1911", 3, 1.0f, false, false, 6.0f, 0, 70f, 5.0f, 0.75f, 7, 3.0f, AmmoType.Acp45, DamageType.Pierce, "PistolEffect", "ReloadNormal"));
             Models.Add("revolver", new WeaponItemModel("revolver", 3, 1.0f, false, false, 7.0f, 2.0f, 70f, 4.0f, 1.0f, 6, 5.0f, AmmoType.Spc38, DamageType.Pierce, "RevolverEffect", "ReloadRevolver"));
+            Models.Add("lightarmor", new AidItemModel("lightarmor", 15, 1.0f, false, false, AidType.Armor, RestoreType.Override, 100.0f));
+            Models.Add("heavyarmor", new AidItemModel("heavyarmor", 25, 1.0f, false, false, AidType.Armor, RestoreType.Override, 200.0f));
+            Models.Add("stimpack", new AidItemModel("stimpack", 1, 1.0f, false, false, AidType.Health, RestoreType.Add, 20.0f));
+            Models.Add("medkit", new AidItemModel("medkit", 5, 1.0f, false, false, AidType.Health, RestoreType.Add, 50.0f));
+        }
+
+        //TODO load "defs": presentation stuff
+        private static void LoadAllDefs()
+        {
+            //TODO
+            Debug.LogWarning("Inventory defs not implemented yet!");
         }
 
         public static InventoryItemModel GetModel(string name)
@@ -212,6 +238,11 @@ namespace CommonCore.RPG
             }
 
             return quantity;
+        }
+
+        public List<InventoryItemInstance> GetItemsListActual()
+        {
+            return Items;
         }
 
         public InventoryItemInstance[] GetItem(string item) //lack of unique keys makes this essentially useless

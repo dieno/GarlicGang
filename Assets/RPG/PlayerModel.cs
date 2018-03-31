@@ -57,6 +57,11 @@ namespace CommonCore.RPG
             Inventory.AddItem(item, quantity);
         }
 
+        public InventoryModel GetInventoryModelActual()
+        {
+            return Inventory;
+        }
+
 
         public T GetAV<T>(string key)
         {

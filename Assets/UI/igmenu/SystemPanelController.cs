@@ -7,22 +7,31 @@ namespace CommonCore.UI
 {
     public class SystemPanelController : PanelController
     {
+        public Text MessageText;
+
         public override void SignalPaint()
         {
             
         }
 
-
-        // Use this for initialization
-        void Start()
+        public void OnClickSave()
         {
-
+            if(!GameState.Instance.SaveLocked)
+            {
+                GameState.Save();
+                MessageText.text = "Saved successfully!";
+            }
+            else
+            {
+                //can't save!
+                Debug.Log("Can't save here!");
+                MessageText.text = "Can't save here!";
+            }
         }
 
-        // Update is called once per frame
-        void Update()
+        public void OnClickExit()
         {
-
+            BaseSceneController.Current.EndLevel("MainMenuScene");
         }
     }
 }

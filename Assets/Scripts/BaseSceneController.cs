@@ -7,6 +7,11 @@ using UnityEngine.SceneManagement;
 public abstract class BaseSceneController : MonoBehaviour
 {
 
+    public static BaseSceneController Current { get
+        {
+            return GameObject.Find("WorldRoot").GetComponent<BaseSceneController>();
+        } }
+
     public bool SaveOnLoad = false;
     public bool SaveOnExit = true;
     public int Morality;
