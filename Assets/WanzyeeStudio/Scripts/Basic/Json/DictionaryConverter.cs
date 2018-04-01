@@ -14,6 +14,8 @@ using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+//THIS CLASS... THIS CLASS IS FUCKING CANCER
+/*
 namespace WanzyeeStudio.Json{
 	
 	/// <summary>
@@ -83,3 +85,4 @@ namespace WanzyeeStudio.Json{
 	}
 
 }
+*/

@@ -13,6 +13,8 @@ namespace CommonCore.UI
         public RectTransform ScrollContent;
 
         public Text SelectedItemText;
+        public RawImage SelectedItemImage;
+        public Text SelectedItemDescription;
 
         private int SelectedItem;
         private List<string> ItemLookupTable;
@@ -50,19 +52,35 @@ namespace CommonCore.UI
 
         public void OnItemSelected(int i)
         {
-            Debug.Log(i);
+            //Debug.Log(i);
             SelectedItem = i;
+            ClearDetailPane();
             PaintSelectedItem();
         }
 
         private void PaintSelectedItem()
         {
             SelectedItemText.text = ItemLookupTable[SelectedItem];
+            var itemDef = InventoryModel.GetDef(ItemLookupTable[SelectedItem]);
+            if(itemDef == null)
+            {
+                SelectedItemDescription.text = "{missing def}";
+            }
+            else
+            {
+                SelectedItemText.text = itemDef.NiceName;
+                SelectedItemDescription.text = itemDef.Description;
+                Texture2D tex = Resources.Load<Texture2D>("InventoryIcon/" + itemDef.Image);
+                if (tex != null)
+                    SelectedItemImage.texture = tex;
+            }
         }
 
         private void ClearDetailPane()
         {
             SelectedItemText.text = string.Empty;
+            SelectedItemDescription.text = string.Empty;
+            SelectedItemImage.texture = null;
         }
     }
 }
