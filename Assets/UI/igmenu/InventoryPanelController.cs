@@ -15,9 +15,11 @@ namespace CommonCore.UI
         public Text SelectedItemText;
         public RawImage SelectedItemImage;
         public Text SelectedItemDescription;
+        public Text SelectedItemStats;
+        public Button SelectedItemButton;
 
         private int SelectedItem;
-        private List<string> ItemLookupTable;
+        private List<InventoryItemInstance> ItemLookupTable;
 
         public override void SignalPaint()
         {
@@ -36,7 +38,7 @@ namespace CommonCore.UI
 
             List<InventoryItemInstance> itemList = GameState.Instance.Player.GetInventoryModelActual().GetItemsListActual(); //ARE YOU ABSOLUTELY SURE?
             
-            ItemLookupTable = new List<string>(itemList.Count);
+            ItemLookupTable = new List<InventoryItemInstance>(itemList.Count);
 
             for (int i = 0; i < itemList.Count; i++)
             {
@@ -46,7 +48,7 @@ namespace CommonCore.UI
                 Button b = itemGO.GetComponent<Button>();
                 int lexI = i;
                 b.onClick.AddListener(delegate { OnItemSelected(lexI); }); //scoping is weird here
-                ItemLookupTable.Add(item.ItemModel.Name);
+                ItemLookupTable.Add(item);
             }
         }
 
@@ -58,10 +60,33 @@ namespace CommonCore.UI
             PaintSelectedItem();
         }
 
+        public void OnItemUsed()
+        {
+            //handle equipping an item
+            if(SelectedItem >= 0)
+            {
+                InventoryItemInstance itemInstance = ItemLookupTable[SelectedItem];
+                InventoryItemModel itemModel = itemInstance.ItemModel;
+
+                if(itemModel is WeaponItemModel)
+                {
+                    if(!itemInstance.Equipped)
+                    {
+                        GameState.Instance.Player.EquipWeapon(itemInstance);
+
+                        SelectedItemText.text = SelectedItemText.text + " [!]";
+                    }
+                    //TODO handle unequipping
+                        
+                }
+            }
+        }
+
         private void PaintSelectedItem()
         {
-            SelectedItemText.text = ItemLookupTable[SelectedItem];
-            var itemDef = InventoryModel.GetDef(ItemLookupTable[SelectedItem]);
+            var itemModel = ItemLookupTable[SelectedItem].ItemModel;
+            SelectedItemText.text = itemModel.Name;
+            var itemDef = InventoryModel.GetDef(itemModel.Name);
             if(itemDef == null)
             {
                 SelectedItemDescription.text = "{missing def}";
@@ -74,13 +99,30 @@ namespace CommonCore.UI
                 if (tex != null)
                     SelectedItemImage.texture = tex;
             }
+
+            SelectedItemStats.text = itemModel.GetStatsString();
+
+            //handle equipped button and state
+            if(itemModel is WeaponItemModel || itemModel is ArmorItemModel)
+            {
+                if (ItemLookupTable[SelectedItem].Equipped)
+                {
+                    SelectedItemText.text = SelectedItemText.text + " [!]";
+                }
+
+                SelectedItemButton.gameObject.SetActive(true);
+            }
+            
         }
 
         private void ClearDetailPane()
         {
             SelectedItemText.text = string.Empty;
             SelectedItemDescription.text = string.Empty;
+            SelectedItemStats.text = string.Empty;
             SelectedItemImage.texture = null;
+            SelectedItemButton.gameObject.SetActive(false);
+            SelectedItemButton.gameObject.SetActive(false);
         }
     }
 }

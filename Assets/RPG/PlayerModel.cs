@@ -24,6 +24,8 @@ namespace CommonCore.RPG
         [JsonProperty]
         private InventoryModel Inventory;
 
+        [JsonProperty]
+        public InventoryItemInstance EquippedWeapon { get; private set; } 
 
         public PlayerModel()
         {
@@ -60,6 +62,21 @@ namespace CommonCore.RPG
         public InventoryModel GetInventoryModelActual()
         {
             return Inventory;
+        }
+
+        public void EquipWeapon(InventoryItemInstance item)
+        {
+            //if we have a weapon equipped, unequip it
+            if(EquippedWeapon != null)
+            {
+                EquippedWeapon.Equipped = false;
+                EquippedWeapon = null;
+            }
+
+            //equip new weapon
+            EquippedWeapon = item;
+            EquippedWeapon.Equipped = true;
+
         }
 
 

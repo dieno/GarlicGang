@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Text;
 
 namespace CommonCore.RPG
 {
@@ -30,18 +31,21 @@ namespace CommonCore.RPG
     public class InventoryItemInstance
     {
         public float Condition { get; set; } //it's here but basically unimplemented
+        public bool Equipped { get; set; }
         public readonly InventoryItemModel ItemModel;
 
         internal InventoryItemInstance(InventoryItemModel model, float condition)
         {
             ItemModel = model;
             Condition = condition;
+            Equipped = false;
         }
 
         public InventoryItemInstance(InventoryItemModel model)
         {
             ItemModel = model;
             Condition = model.MaxCondition;
+            Equipped = false;
         }
     }
 
@@ -112,6 +116,11 @@ namespace CommonCore.RPG
             Essential = essential;
         }
 
+        public virtual string GetStatsString()
+        {
+            return Essential ? "Essential" : string.Empty;
+        }
+
     }
 
     public class MiscItemModel : InventoryItemModel
@@ -152,6 +161,14 @@ namespace CommonCore.RPG
             DType = dType;
             FireEffect = fireEffect;
             ReloadEffect = reloadEffect;
+        }
+
+        public override string GetStatsString()
+        {
+            StringBuilder str = new StringBuilder(255);
+            //TODO finish impl
+
+            return str.ToString() + base.GetStatsString();
         }
     }
 

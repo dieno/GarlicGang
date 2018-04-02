@@ -25,6 +25,7 @@ namespace CommonCore.RPG
         private static void LoadAllModels()
         {
             //I'm too fucking lazy to actually implement a loader
+            /*
             Models = new Dictionary<string, InventoryItemModel>();
 
             Models.Add("m1911", new WeaponItemModel("m1911", 3, 1.0f, false, false, 6.0f, 0, 70f, 5.0f, 0.75f, 7, 3.0f, AmmoType.Acp45, DamageType.Pierce, "PistolEffect", "ReloadNormal"));
@@ -33,7 +34,22 @@ namespace CommonCore.RPG
             Models.Add("heavyarmor", new AidItemModel("heavyarmor", 25, 1.0f, false, false, AidType.Armor, RestoreType.Override, 200.0f));
             Models.Add("stimpack", new AidItemModel("stimpack", 1, 1.0f, false, false, AidType.Health, RestoreType.Add, 20.0f));
             Models.Add("medkit", new AidItemModel("medkit", 5, 1.0f, false, false, AidType.Health, RestoreType.Add, 50.0f));
+            */
 
+            string data = Resources.Load<TextAsset>("RPGDefs/rpg_items").text;
+            Models = JsonConvert.DeserializeObject<Dictionary<string, InventoryItemModel>>(data, new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Auto
+            });
+
+            /*
+            string json = JsonConvert.SerializeObject(Models, Formatting.Indented, new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Auto
+            });
+            string path = Application.persistentDataPath + "/m.json";
+            File.WriteAllText(path, json);
+            */
         }
 
         private static void LoadAllDefs()

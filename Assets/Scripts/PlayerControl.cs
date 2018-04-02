@@ -55,21 +55,21 @@ public class PlayerControl : MonoBehaviour
         if (MainCamera == null)
             MainCamera = Camera.main;
 
-        PickWeapon();
-        BulletsInMagazine = MagazineCapacity;
+        PickWeapon();        
         //WorldHUDController.Instance.UpdateAmmo(BulletsInMagazine);
     }
 
     private void PickWeapon()
     {
+        InventoryItemInstance iii;
         WeaponItemModel wim;
 
         //get the weapon the player actually has, the shittiest way possible
-        if(GameState.Instance.Player.CountItem("m1911") > 0)
+        if (GameState.Instance.Player.CountItem("m1911") > 0)
         {
             wim = (WeaponItemModel)InventoryModel.GetModel("m1911");
         }
-        else if(GameState.Instance.Player.CountItem("revolver") > 0)
+        else if (GameState.Instance.Player.CountItem("revolver") > 0)
         {
             wim = (WeaponItemModel)InventoryModel.GetModel("revolver");
         }
@@ -81,6 +81,11 @@ public class PlayerControl : MonoBehaviour
 
         //Debug.Log(JsonConvert.SerializeObject(wim));
 
+        PickWeapon(wim);
+    }
+
+    private void PickWeapon(WeaponItemModel wim)
+    {
         BulletSpeed = wim.Velocity;
         BulletDamage = wim.Damage;
         BulletPierce = wim.DamagePierce;
@@ -92,15 +97,27 @@ public class PlayerControl : MonoBehaviour
         ReloadEffectPrefab = Resources.Load<GameObject>("ReloadEffect/" + wim.ReloadEffect);
 
         EquippedWeapon = wim.Name;
+
+        BulletsInMagazine = MagazineCapacity;
     }
 
     // Update is called once per frame
     void Update() //you can't use FixedUpdate if you want your controls not to be shit, Ryan
     {
+        EquipmentCheck();
         MovementControl();
         ShootControl();
-
+        
         //WorldHUDController.Instance.UpdateHealth(GameState.Instance.Player.Health); //fuck it
+    }
+
+    void EquipmentCheck()
+    {
+        //do it the laziest way possible
+        if(GameState.Instance.Player.EquippedWeapon != null && GameState.Instance.Player.EquippedWeapon.ItemModel.Name != EquippedWeapon)
+        {
+            PickWeapon((WeaponItemModel)GameState.Instance.Player.EquippedWeapon.ItemModel);
+        }
     }
 
 
