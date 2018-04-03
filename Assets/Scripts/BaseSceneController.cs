@@ -12,6 +12,7 @@ public abstract class BaseSceneController : MonoBehaviour
             return GameObject.Find("WorldRoot").GetComponent<BaseSceneController>();
         } }
 
+    public bool AutoloadUI = true;
     public bool SaveOnLoad = false;
     public bool SaveOnExit = true;
     public int Morality;
@@ -31,6 +32,8 @@ public abstract class BaseSceneController : MonoBehaviour
         }
 
         //TODO initialize HUD and controls
+        if (AutoloadUI)
+            InitUI();
     }
 
     // Use this for initialization
@@ -74,5 +77,11 @@ public abstract class BaseSceneController : MonoBehaviour
         foreach (string s in Flags)
             gs.CampaignFlags.Add(s);
         GameState.Save();
+    }
+
+    protected void InitUI()
+    {
+        Instantiate<GameObject>(Resources.Load<GameObject>("DynamicUI/HUDCanvas"), transform).name = "HUDCanvas";
+        Instantiate<GameObject>(Resources.Load<GameObject>("DynamicUI/MenuSystem"), transform).name = "MenuSystem";
     }
 }
