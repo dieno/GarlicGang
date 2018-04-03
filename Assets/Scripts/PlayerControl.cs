@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using CommonCore.RPG;
+using CommonCore.Messaging;
 
 public class PlayerControl : MonoBehaviour
 {
@@ -47,6 +48,7 @@ public class PlayerControl : MonoBehaviour
     public int BulletsInMagazine { get; private set; }  
     public string EquippedWeapon { get; private set; }
 
+    private QdmsMessageInterface MessageInterface;
 
     void Start()
     {
@@ -55,8 +57,10 @@ public class PlayerControl : MonoBehaviour
         if (MainCamera == null)
             MainCamera = Camera.main;
 
-        PickWeapon();        
+        PickWeapon();
         //WorldHUDController.Instance.UpdateAmmo(BulletsInMagazine);
+
+        MessageInterface = new QdmsMessageInterface();
     }
 
     private void PickWeapon()
@@ -104,17 +108,35 @@ public class PlayerControl : MonoBehaviour
     // Update is called once per frame
     void Update() //you can't use FixedUpdate if you want your controls not to be shit, Ryan
     {
-        EquipmentCheck();
+        HandleMessages();
         MovementControl();
         ShootControl();
         
         //WorldHUDController.Instance.UpdateHealth(GameState.Instance.Player.Health); //fuck it
     }
 
-    void EquipmentCheck()
+    void HandleMessages()
+    {
+        if(MessageInterface.Valid && MessageInterface.HasMessageInQueue)
+        {
+
+            while(MessageInterface.HasMessageInQueue)
+            {
+                QdmsMessage msg = MessageInterface.PopFromQueue();
+
+                if (msg.GetType() == typeof(RpgChangeWeaponMessage))
+                    DoEquipmentThing();
+            }
+
+        }
+
+        
+    }
+
+    private void DoEquipmentThing()
     {
         //do it the laziest way possible
-        if(GameState.Instance.Player.EquippedWeapon != null && GameState.Instance.Player.EquippedWeapon.ItemModel.Name != EquippedWeapon)
+        if (GameState.Instance.Player.EquippedWeapon != null && GameState.Instance.Player.EquippedWeapon.ItemModel.Name != EquippedWeapon)
         {
             PickWeapon((WeaponItemModel)GameState.Instance.Player.EquippedWeapon.ItemModel);
         }

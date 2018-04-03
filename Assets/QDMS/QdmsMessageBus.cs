@@ -22,12 +22,24 @@ namespace CommonCore.Messaging
 
         private QdmsMessageBus()
         {
+            Debug.Log("QDMS bus created!");
             Receivers = new List<QdmsMessageInterface>();
+        }
+
+        ~QdmsMessageBus()
+        {
+            foreach(QdmsMessageInterface r in Receivers)
+            {
+                if (r != null)
+                    r.Valid = false;
+            }
+
+            Debug.Log("QDMS bus destroyed!");
         }
 
         private List<QdmsMessageInterface> Receivers;
 
-        internal void PushBroadcast(QdmsMessage msg)
+        internal void PushBroadcast(QdmsMessage msg) //internal doesn't work the way I thought it did, gah
         {
             foreach(QdmsMessageInterface r in Receivers)
             {
@@ -52,10 +64,27 @@ namespace CommonCore.Messaging
             Receivers.Remove(receiver);
         }
 
-        public void ForceCreate()
+        public static void ForceCreate()
         {
-            Instance.GetType();
+            Instance.GetType(); //hacky!
         }
+
+        public static void ForcePurge()
+        {
+            _Instance = null;
+        }
+
+        public void ForceCleanup()
+        {
+            for(int i = Receivers.Count-1; i >= 0; i--)
+            {
+                var r = Receivers[i];
+                if (r == null)
+                    Receivers.RemoveAt(i);
+            }
+        }
+
+
 
     }
 }

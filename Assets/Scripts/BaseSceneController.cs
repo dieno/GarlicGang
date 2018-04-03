@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using CommonCore.Messaging;
 
 //loosely based on the FSVR base controller
 public abstract class BaseSceneController : MonoBehaviour
@@ -30,6 +31,10 @@ public abstract class BaseSceneController : MonoBehaviour
             if (GameState.SaveExists)
                 GameState.Restore();
         }
+
+        //initialize message bus
+        QdmsMessageBus.ForceCreate();
+        QdmsMessageBus.Instance.ForceCleanup();
 
         //TODO initialize HUD and controls
         if (AutoloadUI)

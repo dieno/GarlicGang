@@ -9,6 +9,7 @@ namespace CommonCore.Messaging
     public class QdmsMessageInterface
     {
         internal Queue<QdmsMessage> MessageQueue;
+        public bool Valid { get; internal set; }
 
         public QdmsMessageInterface()
         {
@@ -16,6 +17,8 @@ namespace CommonCore.Messaging
 
             //register
             QdmsMessageBus.Instance.RegisterReceiver(this);
+
+            Valid = true;
         }
 
         ~QdmsMessageInterface()
@@ -23,14 +26,20 @@ namespace CommonCore.Messaging
             QdmsMessageBus.Instance.UnregisterReceiver(this);
         }
 
-        public bool HasMessageInQueue()
+        public bool HasMessageInQueue
         {
-            return MessageQueue.Count > 0;
+            get
+            {
+                return MessageQueue.Count > 0;
+            }
         }
 
-        public int CountMessagesInQueue()
+        public int CountMessagesInQueue
         {
-            return MessageQueue.Count;
+            get
+            {
+                return MessageQueue.Count;
+            }
         }
 
         public QdmsMessage PopFromQueue()

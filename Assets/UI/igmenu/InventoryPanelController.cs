@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using CommonCore.RPG;
 using UnityEngine.UI;
+using CommonCore.Messaging;
 
 namespace CommonCore.UI
 {
@@ -73,6 +74,7 @@ namespace CommonCore.UI
                     if(!itemInstance.Equipped)
                     {
                         GameState.Instance.Player.EquipWeapon(itemInstance);
+                        QdmsMessageBus.Instance.PushBroadcast(new RpgChangeWeaponMessage());
 
                         SelectedItemText.text = SelectedItemText.text + " [!]";
                     }

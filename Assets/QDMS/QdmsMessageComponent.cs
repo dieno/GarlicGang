@@ -14,5 +14,11 @@ namespace CommonCore.Messaging
             MessageInterface = new QdmsMessageInterface();
         }
 
+        private void LateUpdate()
+        {
+            if (!MessageInterface.Valid)
+                MessageInterface = new QdmsMessageInterface();
+        }
+
     }
 }
