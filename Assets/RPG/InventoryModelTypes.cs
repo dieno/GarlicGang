@@ -64,6 +64,8 @@ namespace CommonCore.RPG
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
+            if (reader.TokenType == JsonToken.Null) return null;
+
             JObject jsonObject = JObject.Load(reader);
             float condition = jsonObject["Condition"].Value<float>();
             string modelName = jsonObject["$ItemModel"].Value<string>();
