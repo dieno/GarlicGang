@@ -45,7 +45,10 @@ namespace CommonCore.UI
             {
                 var item = itemList[i];
                 GameObject itemGO = Instantiate<GameObject>(ItemTemplatePrefab, ScrollContent);
-                itemGO.GetComponentInChildren<Text>().text = item.ItemModel.Name; //for now
+                if(item.Quantity == InventoryItemInstance.UnstackableQuantity)
+                    itemGO.GetComponentInChildren<Text>().text = item.ItemModel.Name; //for now
+                else
+                    itemGO.GetComponentInChildren<Text>().text = string.Format("{0} ({1})", item.ItemModel.Name, item.Quantity); //for now
                 Button b = itemGO.GetComponent<Button>();
                 int lexI = i;
                 b.onClick.AddListener(delegate { OnItemSelected(lexI); }); //scoping is weird here
