@@ -2,9 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 using CommonCore.RPG;
+using CommonCore.Messaging;
 
 public class PlayerControl : MonoBehaviour
 {
+    public static PlayerControl Instance
+    {
+        get
+        {
+            return GameObject.Find("Player").GetComponent<PlayerControl>();
+        }
+    }
 
     [Header("Player Attributes")]
     [SerializeField]
@@ -38,7 +46,9 @@ public class PlayerControl : MonoBehaviour
     private float nextFireAvailable;
     private bool LastAimedWithStick; //gross hack to make controller and mouse look okay
     public int BulletsInMagazine { get; private set; }  
+    public string EquippedWeapon { get; private set; }
 
+    private QdmsMessageInterface MessageInterface;
 
     void Start()
     {
@@ -48,20 +58,22 @@ public class PlayerControl : MonoBehaviour
             MainCamera = Camera.main;
 
         PickWeapon();
-        BulletsInMagazine = MagazineCapacity;
         //WorldHUDController.Instance.UpdateAmmo(BulletsInMagazine);
+
+        MessageInterface = new QdmsMessageInterface();
     }
 
     private void PickWeapon()
     {
+        InventoryItemInstance iii;
         WeaponItemModel wim;
 
         //get the weapon the player actually has, the shittiest way possible
-        if(GameState.Instance.Player.CountItem("m1911") > 0)
+        if (GameState.Instance.Player.CountItem("m1911") > 0)
         {
             wim = (WeaponItemModel)InventoryModel.GetModel("m1911");
         }
-        else if(GameState.Instance.Player.CountItem("revolver") > 0)
+        else if (GameState.Instance.Player.CountItem("revolver") > 0)
         {
             wim = (WeaponItemModel)InventoryModel.GetModel("revolver");
         }
@@ -73,6 +85,11 @@ public class PlayerControl : MonoBehaviour
 
         //Debug.Log(JsonConvert.SerializeObject(wim));
 
+        PickWeapon(wim);
+    }
+
+    private void PickWeapon(WeaponItemModel wim)
+    {
         BulletSpeed = wim.Velocity;
         BulletDamage = wim.Damage;
         BulletPierce = wim.DamagePierce;
@@ -82,15 +99,47 @@ public class PlayerControl : MonoBehaviour
         MagazineReloadTime = wim.ReloadTime;
         FireEffectPrefab = Resources.Load<GameObject>("GunEffect/" + wim.FireEffect);
         ReloadEffectPrefab = Resources.Load<GameObject>("ReloadEffect/" + wim.ReloadEffect);
+
+        EquippedWeapon = wim.Name;
+
+        BulletsInMagazine = MagazineCapacity;
     }
 
     // Update is called once per frame
     void Update() //you can't use FixedUpdate if you want your controls not to be shit, Ryan
     {
+        HandleMessages();
         MovementControl();
         ShootControl();
-
+        
         //WorldHUDController.Instance.UpdateHealth(GameState.Instance.Player.Health); //fuck it
+    }
+
+    void HandleMessages()
+    {
+        if(MessageInterface.Valid && MessageInterface.HasMessageInQueue)
+        {
+
+            while(MessageInterface.HasMessageInQueue)
+            {
+                QdmsMessage msg = MessageInterface.PopFromQueue();
+
+                if (msg.GetType() == typeof(RpgChangeWeaponMessage))
+                    DoEquipmentThing();
+            }
+
+        }
+
+        
+    }
+
+    private void DoEquipmentThing()
+    {
+        //do it the laziest way possible
+        if (GameState.Instance.Player.EquippedWeapon != null && GameState.Instance.Player.EquippedWeapon.ItemModel.Name != EquippedWeapon)
+        {
+            PickWeapon((WeaponItemModel)GameState.Instance.Player.EquippedWeapon.ItemModel);
+        }
     }
 
 

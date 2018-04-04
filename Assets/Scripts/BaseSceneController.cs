@@ -2,11 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using CommonCore.Messaging;
 
 //loosely based on the FSVR base controller
 public abstract class BaseSceneController : MonoBehaviour
 {
 
+    public static BaseSceneController Current { get
+        {
+            return GameObject.Find("WorldRoot").GetComponent<BaseSceneController>();
+        } }
+
+    public bool AutoloadUI = true;
     public bool SaveOnLoad = false;
     public bool SaveOnExit = true;
     public int Morality;
@@ -25,7 +32,13 @@ public abstract class BaseSceneController : MonoBehaviour
                 GameState.Restore();
         }
 
+        //initialize message bus
+        QdmsMessageBus.ForceCreate();
+        QdmsMessageBus.Instance.ForceCleanup();
+
         //TODO initialize HUD and controls
+        if (AutoloadUI)
+            InitUI();
     }
 
     // Use this for initialization
@@ -69,5 +82,11 @@ public abstract class BaseSceneController : MonoBehaviour
         foreach (string s in Flags)
             gs.CampaignFlags.Add(s);
         GameState.Save();
+    }
+
+    protected void InitUI()
+    {
+        Instantiate<GameObject>(Resources.Load<GameObject>("DynamicUI/HUDCanvas"), transform).name = "HUDCanvas";
+        Instantiate<GameObject>(Resources.Load<GameObject>("DynamicUI/MenuSystem"), transform).name = "MenuSystem";
     }
 }

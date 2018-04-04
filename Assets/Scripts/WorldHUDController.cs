@@ -19,10 +19,12 @@ public class WorldHUDController : MonoBehaviour
     public Text HealthText;
     public Text AmmoText;
     public RawImage FaceImage;
+    public RawImage GunImage;
     public Texture2D[] FemaleFaceImages;
     public Texture2D[] MaleFaceImages;
 
-    //TODO figure out messaging instead of stupid method calls
+    private string CurrentGun;
+
 
     void Update()
     {
@@ -41,6 +43,7 @@ public class WorldHUDController : MonoBehaviour
 
         int ammo = playerController.BulletsInMagazine;
         UpdateAmmo(ammo);
+        UpdateGun(playerController.EquippedWeapon);
     }
 
     //decided to go with an observer/polling model which is slower but less interdependent
@@ -52,7 +55,10 @@ public class WorldHUDController : MonoBehaviour
 
     private void UpdateAmmo(int newAmmo)
     {
-        AmmoText.text = string.Format("{0}/x", newAmmo); 
+        if (newAmmo < 0)
+            newAmmo = 0;
+
+        AmmoText.text = string.Format("{0}", newAmmo); 
     }
 
     private void UpdateFace(float newHealth, float maxHealth, Sex gender)
@@ -78,5 +84,16 @@ public class WorldHUDController : MonoBehaviour
         }
 
 
+    }
+
+    private void UpdateGun(string newGun)
+    {
+        if (string.IsNullOrEmpty(CurrentGun) && newGun == CurrentGun)
+            return;
+
+        CurrentGun = newGun;
+        var newTex = Resources.Load<Texture2D>("InventoryIcon/" + newGun);
+        if(newTex != null)
+            GunImage.texture = newTex;
     }
 }
