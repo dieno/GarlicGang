@@ -49,6 +49,11 @@ namespace CommonCore.RPG
             return Inventory.UseItem(item) != null;
         }
 
+        public bool UseItem(string item, int quantity)
+        {
+            return Inventory.UseItem(item, quantity) != null;
+        }
+
         public void AddItem(string item)
         {
             AddItem(item, 1);

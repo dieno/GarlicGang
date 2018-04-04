@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using CommonCore.RPG;
@@ -29,6 +30,7 @@ public class PlayerControl : MonoBehaviour
     [SerializeField] public float FireRate = 0.5f;
     [SerializeField] public int MagazineCapacity = 5;
     [SerializeField] public float MagazineReloadTime = 2.0f;
+    [SerializeField] public AmmoType BulletType = AmmoType.NoAmmo;
     public GameObject FireEffectPrefab;
     public GameObject ReloadEffectPrefab;
 
@@ -94,6 +96,7 @@ public class PlayerControl : MonoBehaviour
         BulletDamage = wim.Damage;
         BulletPierce = wim.DamagePierce;
         BulletSpread = wim.Spread;
+        BulletType = wim.AType;
         FireRate = wim.FireRate;
         MagazineCapacity = wim.MagazineSize;
         MagazineReloadTime = wim.ReloadTime;
@@ -102,7 +105,7 @@ public class PlayerControl : MonoBehaviour
 
         EquippedWeapon = wim.Name;
 
-        BulletsInMagazine = MagazineCapacity;
+        TryReload();
     }
 
     // Update is called once per frame
@@ -138,8 +141,33 @@ public class PlayerControl : MonoBehaviour
         //do it the laziest way possible
         if (GameState.Instance.Player.EquippedWeapon != null && GameState.Instance.Player.EquippedWeapon.ItemModel.Name != EquippedWeapon)
         {
+            TryUnload();
             PickWeapon((WeaponItemModel)GameState.Instance.Player.EquippedWeapon.ItemModel);
         }
+    }
+
+    private void TryUnload()
+    {
+        if(!string.IsNullOrEmpty(EquippedWeapon) && BulletType != AmmoType.NoAmmo)
+        {
+            if(BulletsInMagazine > 0)
+            {
+                GameState.Instance.Player.AddItem(BulletType.ToString(), BulletsInMagazine);
+                BulletsInMagazine = 0;
+            }
+        }
+    }
+
+    private void TryReload()
+    {
+        if (!string.IsNullOrEmpty(EquippedWeapon) && BulletType != AmmoType.NoAmmo)
+        {
+            int numBulletsAvailable = GameState.Instance.Player.CountItem(BulletType.ToString());
+            int numBulletsToUse = Math.Min(numBulletsAvailable, MagazineCapacity);
+            BulletsInMagazine = numBulletsToUse;
+            GameState.Instance.Player.UseItem(BulletType.ToString(), numBulletsToUse);
+        }
+            
     }
 
 
@@ -160,8 +188,7 @@ public class PlayerControl : MonoBehaviour
         if (BulletsInMagazine < 0 && Time.time > nextFireAvailable)
         {
             //reload is done
-            BulletsInMagazine = MagazineCapacity;
-            //WorldHUDController.Instance.UpdateAmmo(BulletsInMagazine);
+            TryReload();
         }
 
         //shitty, tired hacky-but-it-works code
@@ -206,7 +233,7 @@ public class PlayerControl : MonoBehaviour
     {
 
         //a stupid hacky way of doing bullet spread
-        direction = Quaternion.Euler(0, 0, Random.Range(-BulletSpread, BulletSpread) / 2f) * direction;
+        direction = Quaternion.Euler(0, 0, UnityEngine.Random.Range(-BulletSpread, BulletSpread) / 2f) * direction;
 
         //Set the time that the bullet can be shot again 
         //Time.time(current time) + the fire rate (the delay from the time you've shot)
@@ -229,7 +256,7 @@ public class PlayerControl : MonoBehaviour
         BulletsInMagazine--;
         //WorldHUDController.Instance.UpdateAmmo(BulletsInMagazine);
 
-        if (BulletsInMagazine == 0)
+        if (BulletsInMagazine <= 0)
         {
             //play reload effect
             if (ReloadEffectPrefab != null)
