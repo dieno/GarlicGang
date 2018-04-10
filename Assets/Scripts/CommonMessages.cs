@@ -7,3 +7,8 @@ public class RpgChangeWeaponMessage : QdmsMessage
 {
 
 }
+
+public class PlayerDeathMessage : QdmsMessage
+{
+
+}

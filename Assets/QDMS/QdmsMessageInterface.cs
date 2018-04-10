@@ -11,6 +11,13 @@ namespace CommonCore.Messaging
         internal Queue<QdmsMessage> MessageQueue;
         public bool Valid { get; internal set; }
 
+        public GameObject Attachment { get; internal set; }
+
+        public QdmsMessageInterface(GameObject attachment) : this()
+        {
+            Attachment = attachment;
+        }
+
         public QdmsMessageInterface()
         {
             MessageQueue = new Queue<QdmsMessage>();

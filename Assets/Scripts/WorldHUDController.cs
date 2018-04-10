@@ -18,6 +18,7 @@ public class WorldHUDController : MonoBehaviour
     public WeakReference PlayerC;
     public Text HealthText;
     public Text AmmoText;
+    public Text ArmorText;
     public RawImage FaceImage;
     public RawImage GunImage;
     public Texture2D[] FemaleFaceImages;
@@ -44,6 +45,9 @@ public class WorldHUDController : MonoBehaviour
         int ammo = playerController.BulletsInMagazine;
         UpdateAmmo(ammo);
         UpdateGun(playerController.EquippedWeapon);
+
+        float armor = playerModel.Armor;
+        UpdateArmor(armor);
     }
 
     //decided to go with an observer/polling model which is slower but less interdependent
@@ -59,6 +63,11 @@ public class WorldHUDController : MonoBehaviour
             newAmmo = 0;
 
         AmmoText.text = string.Format("{0}", newAmmo); 
+    }
+
+    private void UpdateArmor(float newArmor)
+    {
+        ArmorText.text = string.Format("{0}", (int)newArmor);
     }
 
     private void UpdateFace(float newHealth, float maxHealth, Sex gender)
