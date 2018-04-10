@@ -17,6 +17,8 @@ namespace CommonCore.RPG
         public Sex Gender { get; set; } //triggered
         public float Health { get; set; }
         public float MaxHealth { get; set; }
+        public float Armor { get; set; } //an absolute gross hack
+        public float MaxArmor { get; set; }
         public int XP { get; set; }
         public int Level { get; set; }
 
@@ -33,6 +35,8 @@ namespace CommonCore.RPG
 
             //defaults
             Gender = Sex.Female;
+            MaxArmor = 100;
+            Armor = 0;
             MaxHealth = 100;
             Health = 100;
             Level = 1;
@@ -42,6 +46,11 @@ namespace CommonCore.RPG
         public int CountItem(string item)
         {
             return Inventory.CountItem(item);
+        }
+
+        public bool RemoveItem(InventoryItemInstance item)
+        {
+            return Inventory.RemoveItem(item);
         }
 
         public bool UseItem(string item)

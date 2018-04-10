@@ -140,6 +140,11 @@ namespace CommonCore.RPG
             return items.ToArray();
         }
 
+        public bool RemoveItem(InventoryItemInstance item)
+        {
+            return Items.Remove(item);
+        }
+
         public InventoryItemModel UseItem(string item, int quantity)
         {
             int foundIndex = -1;
