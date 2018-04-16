@@ -81,9 +81,19 @@ namespace CommonCore.UI
 
                         SelectedItemText.text = SelectedItemText.text + " [!]";
                     }
-                    //TODO handle unequipping
-                        
+                    //TODO unequip?
+
                 }
+                else if(itemModel is AidItemModel)
+                {
+                    var aim = (AidItemModel)itemModel;
+                    aim.Apply();
+                    GameState.Instance.Player.RemoveItem(ItemLookupTable[SelectedItem]);
+
+                    //TODO effect or at least a message
+                }
+
+                SignalPaint();
             }
         }
 
@@ -116,6 +126,18 @@ namespace CommonCore.UI
                 }
 
                 SelectedItemButton.gameObject.SetActive(true);
+                SelectedItemButton.transform.Find("Text").GetComponent<Text>().text = "Equip";
+            }
+            else if (itemModel is AidItemModel)
+            {
+                SelectedItemButton.gameObject.SetActive(true);
+                SelectedItemButton.transform.Find("Text").GetComponent<Text>().text = "Use";
+            }
+            
+            if(itemModel.Stackable)
+            {
+                int qty = ItemLookupTable[SelectedItem].Quantity;
+                SelectedItemText.text = SelectedItemText.text + string.Format(" {0}", qty);
             }
             
         }

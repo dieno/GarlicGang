@@ -18,6 +18,8 @@ public class PlayerControl : MonoBehaviour
     [Header("Player Attributes")]
     [SerializeField]
     public float speed = 1.0f;
+    public float HasArmorDR = 10.0f;
+    public float HasArmorDT = 10.0f;
 
     [Header("Bullet Attributes")]
     public GameObject BulletPrefab;
@@ -62,7 +64,7 @@ public class PlayerControl : MonoBehaviour
         PickWeapon();
         //WorldHUDController.Instance.UpdateAmmo(BulletsInMagazine);
 
-        MessageInterface = new QdmsMessageInterface();
+        MessageInterface = new QdmsMessageInterface(gameObject);
     }
 
     private void PickWeapon()
@@ -276,12 +278,20 @@ public class PlayerControl : MonoBehaviour
         var bs = collision.gameObject.GetComponent<BulletScript>();
         if (bs != null)
         {
-            int bulletDamage = 1; //TODO get from bullet
+            float dt = 0, dr = 0;
+            if(GameState.Instance.Player.Armor > 0)
+            {
+                dt = HasArmorDT;
+                dr = HasArmorDR;
+                GameState.Instance.Player.Armor -= bs.Damage + bs.DamagePierce;
+            }
+            float bulletDamage = DamageUtil.CalculateDamage(bs.Damage, bs.DamagePierce, dt, dr);
             GameState.Instance.Player.Health -= bulletDamage;
             //gameUI.GetComponent<HealthUI>().LoseHealth();
             if (GameState.Instance.Player.Health <= 0)
             {
                 Debug.Log("Game Over");
+                MessageInterface.PushToBus(new PlayerDeathMessage());
                 gameOverScene.SetActive(true); //TODO make this signal a gamecontroller, preferably using messaging, because I mean DAMN
             }
             Destroy(collision.gameObject);

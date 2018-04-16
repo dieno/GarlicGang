@@ -217,6 +217,54 @@ namespace CommonCore.RPG
             RType = rType;
             Amount = amount;
         }
+
+        public void Apply()
+        {
+            Apply(this, GameState.Instance.Player);
+        }
+
+        public static void Apply(AidItemModel item, PlayerModel player)
+        {
+            switch (item.AType)
+            {
+                case AidType.Health:
+                    {
+                        switch (item.RType)
+                        {
+                            case RestoreType.Add:
+                                player.Health = Math.Min(player.Health + item.Amount, player.MaxHealth);
+                                break;
+                            case RestoreType.Boost:
+                                player.Health += item.Amount;
+                                break;
+                            case RestoreType.Override:
+                                player.Health = item.Amount;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    break;
+                case AidType.Armor:
+                    {
+                        switch (item.RType)
+                        {
+                            case RestoreType.Add:
+                                player.Armor = Math.Min(player.Armor + item.Amount, player.MaxArmor);
+                                break;
+                            case RestoreType.Boost:
+                                player.Armor += item.Amount;
+                                break;
+                            case RestoreType.Override:
+                                player.Armor = item.Amount;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    break;
+            }
+        }
     }
 
     public class MoneyItemModel : InventoryItemModel
