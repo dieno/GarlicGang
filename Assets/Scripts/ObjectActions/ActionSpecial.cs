@@ -10,6 +10,7 @@ namespace Ares.ObjectActions
         public GameObject Activator;
     }
 
+    [System.Serializable]
     public class ActionSpecialEvent : UnityEvent<ActionInvokerData> { }
 
     public abstract class ActionSpecial : MonoBehaviour
