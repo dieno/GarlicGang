@@ -8,7 +8,7 @@ public class DialogueStrapTestScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
-        GameState.Instance.CurrentDialogue = "coldopen.matsuda1";
+        GameState.Instance.CurrentDialogue = "end.intro1";
         SceneManager.LoadScene("DialogueScene");
 		
 	}

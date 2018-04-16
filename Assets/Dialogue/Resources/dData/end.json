@@ -1,0 +1,248 @@
+{
+  "background": "house",
+  "music": "apprehensive",
+  "default": "brokenincommoncore",
+  "frames": {
+    "intro1": {
+      "type": "text",
+      "image": "lapone",
+      "nameText": "Cal LaPone",
+      "next": "this.intro2",
+      "text": "Wait! Stop right there, Agent Kelley!"
+    },
+    "intro2": {
+      "type": "choice",
+      "image": "lapone",
+      "nameText": "Cal LaPone",
+      "choices": [
+        {
+          "text": "Why should I?",
+          "next": "this.intro3"
+        },
+        {
+          "text": "Like hell I will!",
+          "next": "this.intro3"
+        }
+      ]
+    },
+    "intro3": {
+      "type": "text",
+      "image": "lapone2",
+      "nameText": "???",
+      "next": "this.intro4",
+      "text": "It is I, J.E. Vacuumcleaner!"
+    },
+    "intro4": {
+      "type": "choice",
+      "image": "lapone2",
+      "nameText": "J.E. Vacuumcleaner",
+      "choices": [
+        {
+          "text": "What? How?",
+          "next": "this.intro6"
+        },
+        {
+          "text": "This makes no sense!",
+          "next": "this.intro6"
+        },
+        {
+          "text": "You traitor!",
+          "next": "this.intro5"
+        }
+      ]
+    },
+    "intro5": {
+      "type": "text",
+      "image": "lapone2",
+      "nameText": "J.E. Vacuumcleaner",
+      "next": "this.intro6",
+      "text": "Traitor? Not hardly! Our country was founded on the idea of a self-made man, with no gods, no masters! And, as you have seen, I have certainly made well for myself!"
+    },
+    "intro6": {
+      "type": "text",
+      "image": "lapone2",
+      "nameText": "J.E. Vacuumcleaner",
+      "next": "this.intro7",
+      "text": "It makes <i>perfect</i> sense. As director of the FBI, I am the most powerful man in the country! Why, I could probably have the President killed if I wanted to!"
+    },
+    "intro7": {
+      "type": "text",
+      "image": "lapone2",
+      "nameText": "J.E. Vacuumcleaner",
+      "next": "this.intro8",
+      "text": "Have you noticed that all our law enforcement is focused on the \nCommunist threat? That was my doing! The Soviet Union gave me a \nconvenient target, and it was so easy to turn that into a Red Scare. Every agent chasing quote-unquote Communist Infiltrators is an agent not chasing my criminal enterprises."
+    },
+    "intro8": {
+      "type": "choice",
+      "image": "lapone2",
+      "nameText": "J.E. Vacuumcleaner",
+      "choices": [
+        {
+          "text": "Why are you doing this?",
+          "next": "this.a1"
+        },
+        {
+          "text": "Why would you send me after yourself?",
+          "next": "this.b1"
+        },
+        {
+          "text": "How did you get away with this for so long?",
+          "next": "this.c1"
+        },
+        {
+          "text": "Enough gloating, time for you to die!",
+          "next": "this.intro10"
+        }
+      ]
+    },
+    "a1": {
+      "type": "text",
+      "image": "lapone2",
+      "nameText": "J.E. Vacuumcleaner",
+      "next": "this.a2",
+      "text": "Why, money, of course!"
+    },
+    "a2": {
+      "type": "choice",
+      "image": "lapone2",
+      "nameText": "J.E. Vacuumcleaner",
+      "choices": [
+        {
+          "text": "You're director of the FBI! You have a six-figure salary, isn't that enough?",
+          "next": "this.a3"
+        },
+        {
+          "text": "Money? That's what this is about?",
+          "next": "this.a4"
+        }
+      ]
+    },
+    "a3": {
+      "type": "text",
+      "image": "lapone2",
+      "nameText": "J.E. Vacuumcleaner",
+      "next": "this.a4",
+      "text": "No. Not even close."
+    },
+    "a4": {
+      "type": "text",
+      "image": "lapone2",
+      "nameText": "J.E. Vacuumcleaner",
+      "next": "this.a5",
+      "text": "Money is one thing, but money is worthless unless you have something worth spending it on. No, this is about something far greater."
+    },
+    "a5": {
+      "type": "choice",
+      "image": "lapone2",
+      "nameText": "J.E. Vacuumcleaner",
+      "choices": [
+        {
+          "text": "And what would that be?",
+          "next": "this.a6"
+        }
+      ]
+    },
+    "a6": {
+      "type": "text",
+      "image": "lapone2",
+      "nameText": "J.E. Vacuumcleaner",
+      "next": "this.a7",
+      "text": "Garlic."
+    },
+    "a7": {
+      "type": "choice",
+      "image": "lapone2",
+      "nameText": "J.E. Vacuumcleaner",
+      "choices": [
+        {
+          "text": "Garlic?",
+          "next": "this.a8"
+        },
+        {
+          "text": "What.",
+          "next": "this.a8"
+        },
+        {
+          "text": "What in the actual fuck?",
+          "next": "this.a8"
+        }
+      ]
+    },
+    "a8": {
+      "type": "text",
+      "image": "lapone2",
+      "nameText": "J.E. Vacuumcleaner",
+      "next": "this.intro8",
+      "text": "Yes, garlic. The true devil's lettuce. A vile bulb with a horrific flavour and an even worse smell. Few things have no redeeming qualities at all, but I can safely say that garlic is one of them. You see, I need the money so I can take over the garlic industry, and eradicate that damned plant from our otherwise beautiful Earth forever. "
+    },
+    "b1": {
+      "type": "text",
+      "image": "lapone2",
+      "nameText": "J.E. Vacuumcleaner",
+      "next": "this.b2",
+      "text": "I was not lying when I said you were our best agent, Kelley. I was sending you to into a trap. You would die a hero in the line of duty, and I would have you out of my way. A win-win situation, if a morbid one."
+    },
+    "b2": {
+      "type": "choice",
+      "image": "lapone2",
+      "nameText": "J.E. Vacuumcleaner",
+      "choices": [
+        {
+          "text": "Ha! It'll take more than that to kill me.",
+          "next": "this.b3"
+        },
+        {
+          "text": "Well, that was stupid!",
+          "next": "this.b3"
+        }
+      ]
+    },
+    "b3": {
+      "type": "text",
+      "image": "lapone2",
+      "nameText": "J.E. Vacuumcleaner",
+      "next": "this.intro8",
+      "text": "Don't count your chickens before they hatch, Kelley. This is not over yet."
+    },
+    "c1": {
+      "type": "text",
+      "image": "lapone2",
+      "nameText": "J.E. Vacuumcleaner",
+      "next": "this.c2",
+      "text": "Honestly, I'm not sure. When I first started this, I was sure that the fine agents of the FBI, the Treasury, the ATF, the DEA, NCIS, et cetera et cetera would track me down and bring me to justice."
+    },
+    "c2": {
+      "type": "text",
+      "image": "lapone2",
+      "nameText": "J.E. Vacuumcleaner",
+      "next": "this.intro8",
+      "text": "As time went on and nothing happened, I realized how much I could get away with. It's really shaken my confidence in our criminal justice system."
+    },
+    "intro10": {
+      "type": "text",
+      "image": "lapone2",
+      "nameText": "J.E. Vacuumcleaner",
+      "next": "this.intro11",
+      "text": "Gloating? Not hardly. I was merely stalling. You were the dramatic fool who fell for it."
+    },
+    "intro11": {
+      "type": "choice",
+      "image": "lapone2",
+      "nameText": "J.E. Vacuumcleaner",
+      "next": "this.intro14",
+      "choices": [
+        {
+          "text": "Do you really expect me to believe that?",
+          "next": "this.intro14"
+        }
+      ]
+    },
+    "intro14": {
+      "type": "text",
+      "image": "lapone2",
+      "nameText": "J.E. Vacuumcleaner",
+      "next": "scene.EndScene",
+      "text": "No, Agent Kelley, I expect you to die."
+    }
+  }
+}
