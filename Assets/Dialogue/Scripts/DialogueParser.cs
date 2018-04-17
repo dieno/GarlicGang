@@ -12,7 +12,7 @@ namespace CommonCore.Dialogue
         {
             TextAsset ta = Resources.Load<TextAsset>("dData/" + dialogueName);
             JObject jo = JObject.Parse(ta.text);
-            Debug.Log(jo);
+            //Debug.Log(jo);
 
             //parse root node (scene)
             string sBackground = string.Empty;

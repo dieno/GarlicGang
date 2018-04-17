@@ -1038,7 +1038,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e42200926f3b3f44e930ea1d64512b8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NextScene: FirstGameScene
+  NextScene: GameScene
   ChanceOfDyingHorriblyInAPlaneCrash: 0.1
   PlaneMoveRate: 4
   PlaneDecisionDistance: 20

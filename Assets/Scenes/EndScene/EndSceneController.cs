@@ -25,6 +25,8 @@ public class EndSceneController : MonoBehaviour
         yield return new WaitForSeconds(EndingLength);
 
         GameObject.Find("Video Player 2").GetComponent<VideoPlayer>().Play();
+
+        StartCoroutine(EndEverythingCoroutine());
     }
 
     IEnumerator EndEverythingCoroutine()
