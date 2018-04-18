@@ -45,7 +45,10 @@ namespace CommonCore.UI
             {
                 var item = itemList[i];
                 GameObject itemGO = Instantiate<GameObject>(ItemTemplatePrefab, ScrollContent);
-                itemGO.GetComponentInChildren<Text>().text = item.ItemModel.Name; //for now
+                if(item.Quantity == InventoryItemInstance.UnstackableQuantity)
+                    itemGO.GetComponentInChildren<Text>().text = item.ItemModel.Name; //for now
+                else
+                    itemGO.GetComponentInChildren<Text>().text = string.Format("{0} ({1})", item.ItemModel.Name, item.Quantity); //for now
                 Button b = itemGO.GetComponent<Button>();
                 int lexI = i;
                 b.onClick.AddListener(delegate { OnItemSelected(lexI); }); //scoping is weird here
@@ -78,9 +81,19 @@ namespace CommonCore.UI
 
                         SelectedItemText.text = SelectedItemText.text + " [!]";
                     }
-                    //TODO handle unequipping
-                        
+                    //TODO unequip?
+
                 }
+                else if(itemModel is AidItemModel)
+                {
+                    var aim = (AidItemModel)itemModel;
+                    aim.Apply();
+                    GameState.Instance.Player.RemoveItem(ItemLookupTable[SelectedItem]);
+
+                    //TODO effect or at least a message
+                }
+
+                SignalPaint();
             }
         }
 
@@ -113,6 +126,18 @@ namespace CommonCore.UI
                 }
 
                 SelectedItemButton.gameObject.SetActive(true);
+                SelectedItemButton.transform.Find("Text").GetComponent<Text>().text = "Equip";
+            }
+            else if (itemModel is AidItemModel)
+            {
+                SelectedItemButton.gameObject.SetActive(true);
+                SelectedItemButton.transform.Find("Text").GetComponent<Text>().text = "Use";
+            }
+            
+            if(itemModel.Stackable)
+            {
+                int qty = ItemLookupTable[SelectedItem].Quantity;
+                SelectedItemText.text = SelectedItemText.text + string.Format(" {0}", qty);
             }
             
         }

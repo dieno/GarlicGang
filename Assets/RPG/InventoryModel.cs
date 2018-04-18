@@ -12,6 +12,8 @@ namespace CommonCore.RPG
 
     public class InventoryModel
     {
+        const bool AutocreateModels = true;
+
         private static Dictionary<string, InventoryItemModel> Models;
         private static Dictionary<string, InventoryItemDef> Defs;
 
@@ -41,6 +43,22 @@ namespace CommonCore.RPG
             {
                 TypeNameHandling = TypeNameHandling.Auto
             });
+
+            if(AutocreateModels)
+            {
+
+                foreach (AmmoType at in Enum.GetValues(typeof(AmmoType)))
+                {
+                    AmmoItemModel aim = new AmmoItemModel(at.ToString(), 0, 1, false, false, at);
+                    Models.Add(at.ToString(), aim);
+                }
+
+                foreach(MoneyType mt in Enum.GetValues(typeof(MoneyType)))
+                {
+                    MoneyItemModel mim = new MoneyItemModel(mt.ToString(), 0, 1, false, false, mt);
+                    Models.Add(mt.ToString(), mim);
+                }
+            }
 
             /*
             string json = JsonConvert.SerializeObject(Models, Formatting.Indented, new JsonSerializerSettings
@@ -92,8 +110,10 @@ namespace CommonCore.RPG
             int quantity = 0;
             foreach(InventoryItemInstance i in Items)
             {
-                if (i.ItemModel.Name == item)
+                if (i.ItemModel.Name == item && i.Quantity == -1)
                     quantity++;
+                else if (i.ItemModel.Name == item && i.Quantity > 0)
+                    quantity += i.Quantity;
             }
 
             return quantity;
@@ -104,8 +124,11 @@ namespace CommonCore.RPG
             return Items;
         }
 
+        [Obsolete("I don't even know what GetItem was supposed to do")]
         public InventoryItemInstance[] GetItem(string item) //lack of unique keys makes this essentially useless
         {
+            Debug.LogWarning("GetItem is deprecated!");
+
             List<InventoryItemInstance> items = new List<InventoryItemInstance>();
 
             foreach(InventoryItemInstance i in Items)
@@ -115,6 +138,59 @@ namespace CommonCore.RPG
             }
 
             return items.ToArray();
+        }
+
+        public bool RemoveItem(InventoryItemInstance item)
+        {
+            return Items.Remove(item);
+        }
+
+        public InventoryItemModel UseItem(string item, int quantity)
+        {
+            int foundIndex = -1;
+            InventoryItemModel foundModel = null;
+            for (int i = 0; i < Items.Count; i++)
+            {
+                if (Items[i].ItemModel.Name == item)
+                {
+                    foundIndex = i;
+                    foundModel = Items[i].ItemModel;
+                    break;
+                }
+            }
+            if (foundIndex >= 0)
+            {
+                if (foundModel.Stackable)
+                {
+                    if (Items[foundIndex].Quantity < quantity)
+                        throw new InvalidOperationException();
+
+                    Items[foundIndex].Quantity -= quantity;
+                    if (Items[foundIndex].Quantity == 0)
+                        Items.RemoveAt(foundIndex);
+                }
+                else
+                {
+                    if (quantity > 1)
+                    {
+                        //TODO fuck this is horrible
+                        for(int j = 0; j < quantity; j++)
+                        {
+                            UseItem(item);
+                        }
+                    }
+                    else
+                    {
+                        Items.RemoveAt(foundIndex);
+                    }
+
+                    
+                }
+
+            }
+
+
+            return foundModel;
         }
 
         public InventoryItemModel UseItem(string item)
@@ -132,7 +208,20 @@ namespace CommonCore.RPG
                 }
             }
             if(foundIndex >= 0)
-                Items.RemoveAt(foundIndex);
+            {
+                if(foundModel.Stackable)
+                {
+                    Items[foundIndex].Quantity -= 1;
+                    if (Items[foundIndex].Quantity == 0)
+                        Items.RemoveAt(foundIndex);
+                }
+                else
+                {
+                    Items.RemoveAt(foundIndex);
+                }
+                
+            }
+                
 
             return foundModel;
         }
@@ -141,10 +230,33 @@ namespace CommonCore.RPG
         {
             InventoryItemModel mdl = Models[item];
 
-            for(int i = 0; i < quantity; i++)
+            if(mdl.Stackable)
             {
-                Items.Add(new InventoryItemInstance(mdl));
+                InventoryItemInstance instance = null;
+                foreach(InventoryItemInstance i in Items)
+                {
+                    if(i.ItemModel.Name == mdl.Name)
+                    {
+                        instance = i;
+                        break;
+                    }
+                }
+                if(instance == null)
+                {
+                    instance = new InventoryItemInstance(mdl);
+                    Items.Add(instance);
+                }
+
+                instance.Quantity += quantity;
             }
+            else
+            {
+                for (int i = 0; i < quantity; i++)
+                {
+                    Items.Add(new InventoryItemInstance(mdl));
+                }
+            }
+
         }
 
     }

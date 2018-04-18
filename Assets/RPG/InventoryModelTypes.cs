@@ -5,6 +5,11 @@ using System.Text;
 
 namespace CommonCore.RPG
 {
+    public enum MoneyType
+    {
+        Dollars
+    }
+
     public enum AmmoType
     {
         NoAmmo, Acp32, Spc38, Acp45, R3006
@@ -30,15 +35,19 @@ namespace CommonCore.RPG
     [JsonConverter(typeof(InventoryItemSerializer))]
     public class InventoryItemInstance
     {
+        public const int UnstackableQuantity = -1;
+
+        public int Quantity { get; set; }
         public float Condition { get; set; } //it's here but basically unimplemented
         public bool Equipped { get; set; }
         public readonly InventoryItemModel ItemModel;
 
-        internal InventoryItemInstance(InventoryItemModel model, float condition)
+        internal InventoryItemInstance(InventoryItemModel model, float condition, int quantity)
         {
             ItemModel = model;
             Condition = condition;
             Equipped = false;
+            Quantity = quantity;
         }
 
         public InventoryItemInstance(InventoryItemModel model)
@@ -46,6 +55,7 @@ namespace CommonCore.RPG
             ItemModel = model;
             Condition = model.MaxCondition;
             Equipped = false;
+            Quantity = model.Stackable ? 1 : UnstackableQuantity;
         }
     }
 
@@ -57,6 +67,8 @@ namespace CommonCore.RPG
             writer.WriteStartObject();
             writer.WritePropertyName("Condition");
             writer.WriteValue(item.Condition);
+            writer.WritePropertyName("Quantity");
+            writer.WriteValue(item.Quantity);
             writer.WritePropertyName("$ItemModel");
             writer.WriteValue(item.ItemModel.Name);
             writer.WriteEndObject();
@@ -64,12 +76,15 @@ namespace CommonCore.RPG
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
+            if (reader.TokenType == JsonToken.Null) return null;
+
             JObject jsonObject = JObject.Load(reader);
             float condition = jsonObject["Condition"].Value<float>();
             string modelName = jsonObject["$ItemModel"].Value<string>();
+            int quantity = jsonObject["Quantity"].Value<int>();
             InventoryItemModel model = InventoryModel.GetModel(modelName);
 
-            return new InventoryItemInstance(model, condition);
+            return new InventoryItemInstance(model, condition, quantity);
         }
 
         public override bool CanConvert(Type objectType)
@@ -106,6 +121,7 @@ namespace CommonCore.RPG
         public readonly float MaxCondition;
         public readonly bool Unique;
         public readonly bool Essential;
+        public bool Stackable { get; protected set; }
 
         public InventoryItemModel(string name, float weight, float maxCondition, bool unique, bool essential)
         {
@@ -114,6 +130,7 @@ namespace CommonCore.RPG
             MaxCondition = maxCondition;
             Unique = unique;
             Essential = essential;
+            Stackable = false;
         }
 
         public virtual string GetStatsString()
@@ -199,6 +216,76 @@ namespace CommonCore.RPG
             AType = aType;
             RType = rType;
             Amount = amount;
+        }
+
+        public void Apply()
+        {
+            Apply(this, GameState.Instance.Player);
+        }
+
+        public static void Apply(AidItemModel item, PlayerModel player)
+        {
+            switch (item.AType)
+            {
+                case AidType.Health:
+                    {
+                        switch (item.RType)
+                        {
+                            case RestoreType.Add:
+                                player.Health = Math.Min(player.Health + item.Amount, player.MaxHealth);
+                                break;
+                            case RestoreType.Boost:
+                                player.Health += item.Amount;
+                                break;
+                            case RestoreType.Override:
+                                player.Health = item.Amount;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    break;
+                case AidType.Armor:
+                    {
+                        switch (item.RType)
+                        {
+                            case RestoreType.Add:
+                                player.Armor = Math.Min(player.Armor + item.Amount, player.MaxArmor);
+                                break;
+                            case RestoreType.Boost:
+                                player.Armor += item.Amount;
+                                break;
+                            case RestoreType.Override:
+                                player.Armor = item.Amount;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    break;
+            }
+        }
+    }
+
+    public class MoneyItemModel : InventoryItemModel
+    {
+        public readonly MoneyType Type;
+
+        public MoneyItemModel(string name, float weight, float maxCondition, bool unique, bool essential, MoneyType type) : base(name, weight, maxCondition, unique, essential)
+        {
+            Type = type;
+            Stackable = true;
+        }
+    }
+
+    public class AmmoItemModel : InventoryItemModel
+    {
+        public readonly AmmoType Type;
+
+        public AmmoItemModel(string name, float weight, float maxCondition, bool unique, bool essential, AmmoType type) : base(name, weight, maxCondition, unique, essential)
+        {
+            Type = type;
+            Stackable = true;
         }
     }
 }

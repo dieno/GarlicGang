@@ -213,6 +213,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HealthText: {fileID: 114184409020302992}
   AmmoText: {fileID: 114585074758226842}
+  ArmorText: {fileID: 114670046690708522}
   FaceImage: {fileID: 114445714779558490}
   GunImage: {fileID: 114895544667605152}
   FemaleFaceImages:

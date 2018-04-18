@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using WanzyeeStudio;
 
 public class GameState
 {
@@ -50,11 +51,14 @@ public class GameState
     public string LastScene;
     public string CurrentScene;
     public string CurrentDialogue;
+    public Vector3? OverridePosition;
+    public Quaternion? OverrideRotation;
 
     public static void Save()
     {
         string json = JsonConvert.SerializeObject(instance,Formatting.Indented, new JsonSerializerSettings
         {
+            Converters = JsonNetUtility.defaultSettings.Converters,
             TypeNameHandling = TypeNameHandling.Auto
         });
         string path = Application.persistentDataPath + "/save.json";
@@ -71,6 +75,7 @@ public class GameState
         }
         instance = JsonConvert.DeserializeObject<GameState>(File.ReadAllText(path), new JsonSerializerSettings
         {
+            Converters = JsonNetUtility.defaultSettings.Converters,
             TypeNameHandling = TypeNameHandling.Auto
         });
     }
