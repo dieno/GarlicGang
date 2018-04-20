@@ -292,7 +292,7 @@ public class PlayerControl : MonoBehaviour
             {
                 Debug.Log("Game Over");
                 MessageInterface.PushToBus(new PlayerDeathMessage());
-                gameOverScene.SetActive(true); //TODO make this signal a gamecontroller, preferably using messaging, because I mean DAMN
+                //gameOverScene.SetActive(true); //TODO make this signal a gamecontroller, preferably using messaging, because I mean DAMN
             }
             Destroy(collision.gameObject);
         }

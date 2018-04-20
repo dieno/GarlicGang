@@ -18,7 +18,8 @@ public abstract class BaseSceneController : MonoBehaviour
     public bool SaveOnExit = true;
     public int Morality;
     public int Reputation;
-    public List<string> Flags = new List<string>();
+
+    protected QdmsMessageInterface MessageInterface;
 
     public virtual void Awake()
     {
@@ -35,6 +36,7 @@ public abstract class BaseSceneController : MonoBehaviour
         //initialize message bus
         QdmsMessageBus.ForceCreate();
         QdmsMessageBus.Instance.ForceCleanup();
+        MessageInterface = new QdmsMessageInterface(gameObject);
 
         //TODO initialize HUD and controls
         if (AutoloadUI)
@@ -79,8 +81,6 @@ public abstract class BaseSceneController : MonoBehaviour
         var gs = GameState.Instance;
         gs.LastScene = SceneManager.GetActiveScene().name;
         gs.CurrentScene = nextLevel;
-        foreach (string s in Flags)
-            gs.CampaignFlags.Add(s);
         GameState.Save();
     }
 

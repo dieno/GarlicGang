@@ -11,9 +11,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/CharacterCreationScene.unity
     guid: 04fe75754cabc5b4d92cdb581bd9c6fb
-  - enabled: 0
-    path: Assets/Scenes/MainScene.unity
-    guid: 1fd0533a7ac3aae4facdfc41df940b0a
   - enabled: 1
     path: Assets/Scenes/DialogueScene.unity
     guid: 186908a1a0aac3547b16d4228e10c68f
@@ -35,3 +32,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GameScene.unity
     guid: 5a417d755e88ac04b97927feb96a1a35
+  - enabled: 1
+    path: Assets/Scenes/GameOverScene.unity
+    guid: 180a4ad2d8eb01c42be8dab84d16698b
