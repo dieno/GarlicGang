@@ -31,6 +31,7 @@ namespace CommonCore.UI
 
         public void OnClickExit()
         {
+            Time.timeScale = 1;
             BaseSceneController.Current.EndLevel("MainMenuScene");
         }
     }

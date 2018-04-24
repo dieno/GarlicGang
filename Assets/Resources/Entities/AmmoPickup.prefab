@@ -11,6 +11,22 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 1779151130911710}
   m_IsPrefabParent: 1
+--- !u!1 &1230941479676564
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4832294391569698}
+  - component: {fileID: 114961930421562932}
+  m_Layer: 0
+  m_Name: Effect
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1410212742401278
 GameObject:
   m_ObjectHideFlags: 0
@@ -110,14 +126,28 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1779151130911710}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -27.1, y: 0, z: 0}
+  m_LocalPosition: {x: -9.8, y: -65.7, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4370787911007394}
   - {fileID: 4603844982558374}
   - {fileID: 4867809574865444}
+  - {fileID: 4832294391569698}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4832294391569698
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1230941479676564}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4764911928637592}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4867809574865444
 Transform:
@@ -219,6 +249,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 114961930421562932}
+        m_MethodName: Execute
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: Ares.ObjectActions.ActionSpecialEvent, Assembly-CSharp, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   OnPlayerOnly: 1
@@ -255,6 +296,26 @@ MonoBehaviour:
   Target: {fileID: 0}
   AlwaysForceDisable: 1
   AlwaysForceEnable: 0
+--- !u!114 &114961930421562932
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1230941479676564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24549c2ed1c114849b3589b06f8b9f1a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Repeatable: 0
+  Prefab: {fileID: 1236395492461704, guid: b4946fce2d93f7a4085fcb9e503804c7, type: 2}
+  SpawnParent: {fileID: 0}
+  OverrideTransform: 0
+  OverrideTransformRelative: 0
+  OverridePosition: {x: 0, y: 0, z: 0}
+  OverrideRotation: {x: 0, y: 0, z: 0}
+  OverrideScale: {x: 0, y: 0, z: 0}
+  ActivateObject: 1
 --- !u!212 &212684403331602650
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -288,7 +349,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 9001
   m_Sprite: {fileID: 21300000, guid: 3140d047d1972f7428cda6ff801f4b9c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
