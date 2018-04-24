@@ -247,6 +247,7 @@ namespace CommonCore.RPG
                     Items.Add(instance);
                 }
 
+                instance.Quantity = 0;
                 instance.Quantity += quantity;
             }
             else

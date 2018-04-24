@@ -18,6 +18,7 @@ public class PlayerControl : MonoBehaviour
     [Header("Player Attributes")]
     [SerializeField]
     public float speed = 1.0f;
+    public float runMult = 2.0f;
     public float HasArmorDR = 10.0f;
     public float HasArmorDT = 10.0f;
 
@@ -47,6 +48,7 @@ public class PlayerControl : MonoBehaviour
     private Rigidbody2D rb;
     private Vector2 movementVec;
 
+    private bool ReloadSignaled;
     private float nextFireAvailable;
     private bool LastAimedWithStick; //gross hack to make controller and mouse look okay
     public int BulletsInMagazine { get; private set; }  
@@ -110,14 +112,15 @@ public class PlayerControl : MonoBehaviour
         TryReload();
     }
 
-    // Update is called once per frame
-    void Update() //you can't use FixedUpdate if you want your controls not to be shit, Ryan
+    void Update()
     {
+        if (Time.timeScale == 0)
+            return;
+
         HandleMessages();
         MovementControl();
         ShootControl();
         
-        //WorldHUDController.Instance.UpdateHealth(GameState.Instance.Player.Health); //fuck it
     }
 
     void HandleMessages()
@@ -165,11 +168,23 @@ public class PlayerControl : MonoBehaviour
         if (!string.IsNullOrEmpty(EquippedWeapon) && BulletType != AmmoType.NoAmmo)
         {
             int numBulletsAvailable = GameState.Instance.Player.CountItem(BulletType.ToString());
-            int numBulletsToUse = Math.Min(numBulletsAvailable, MagazineCapacity);
-            BulletsInMagazine = numBulletsToUse;
+            int numBulletsToUse = Math.Min(numBulletsAvailable, MagazineCapacity-BulletsInMagazine);
+            BulletsInMagazine += numBulletsToUse;
             GameState.Instance.Player.UseItem(BulletType.ToString(), numBulletsToUse);
-        }
             
+        }
+
+        ReloadSignaled = false;
+    }
+
+    private void ForceReload()
+    {
+        //play reload effect
+        if (ReloadEffectPrefab != null)
+            Instantiate<GameObject>(ReloadEffectPrefab, BulletSpawn.position, BulletSpawn.rotation).transform.SetParent(BulletSpawn); //hacks!
+
+        nextFireAvailable = Time.time + MagazineReloadTime;
+        ReloadSignaled = true;
     }
 
 
@@ -178,8 +193,10 @@ public class PlayerControl : MonoBehaviour
         //Get vector input from both horizontal and vertical axix (WASD)
         movementVec = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
+        float run = Input.GetButton("Run") ? runMult : 1;
+
         //Add force to player rigidbody based on the vector (direction and magnitude)
-        rb.AddForce(movementVec * speed);
+        rb.AddForce(movementVec * speed * run);
     }
 
     void ShootControl()
@@ -187,10 +204,17 @@ public class PlayerControl : MonoBehaviour
         //When the time is past the next fire available time handle the shooting controls
 
         //handle reloading
-        if (BulletsInMagazine < 0 && Time.time > nextFireAvailable)
+        if (ReloadSignaled && Time.time > nextFireAvailable)
         {
             //reload is done
             TryReload();
+            return;
+        }
+
+        if(Input.GetButtonDown("Fire3"))
+        {
+            ForceReload();
+            return;
         }
 
         //shitty, tired hacky-but-it-works code
@@ -265,7 +289,8 @@ public class PlayerControl : MonoBehaviour
                 Instantiate<GameObject>(ReloadEffectPrefab, BulletSpawn.position, BulletSpawn.rotation).transform.SetParent(BulletSpawn); //hacks!
             
             nextFireAvailable = Time.time + MagazineReloadTime;
-            BulletsInMagazine = -1; //stupid and hacky
+            //BulletsInMagazine = -1; //stupid and hacky
+            ReloadSignaled = true;
         }
 
         //also do the effect

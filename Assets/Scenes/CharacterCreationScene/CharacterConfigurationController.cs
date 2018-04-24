@@ -97,9 +97,11 @@ public class CharacterConfigurationController : MonoBehaviour
         {
             case GunType.Revolver:
                 GameState.Instance.Player.AddItem("revolver");
+                GameState.Instance.Player.AddItem("Spc38", 18);
                 break;
             case GunType.Pistol:
                 GameState.Instance.Player.AddItem("m1911");
+                GameState.Instance.Player.AddItem("Acp45", 21);
                 break;
         }
         GameState.Save();
