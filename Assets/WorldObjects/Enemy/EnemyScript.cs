@@ -28,7 +28,7 @@ public class EnemyScript : MonoBehaviour
     private float nextFireAvailable;
 
     public Transform target;
-    private float Health;
+    public float Health { get; private set; }
     private Rigidbody2D rb;
     private Vector2 directionVector;
 

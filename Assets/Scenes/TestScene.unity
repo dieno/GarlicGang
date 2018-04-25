@@ -696,7 +696,6 @@ MonoBehaviour:
   SaveOnExit: 1
   Morality: 0
   Reputation: 0
-  Flags: []
 --- !u!1 &1245416554
 GameObject:
   m_ObjectHideFlags: 0
@@ -841,6 +840,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 100
+  runMult: 2
   HasArmorDR: 10
   HasArmorDT: 10
   BulletPrefab: {fileID: 1424906035088890, guid: 28b9796bd7df94b4d8f2139bbb77da6c,
@@ -1602,11 +1602,6 @@ Prefab:
     - target: {fileID: 4768596884776838, guid: 07374deee1a092e45b9e56e639547cd3, type: 2}
       propertyPath: m_RootOrder
       value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 114742444182342132, guid: 07374deee1a092e45b9e56e639547cd3,
-        type: 2}
-      propertyPath: Special.m_PersistentCalls.m_Calls.Array.data[2].m_Target
-      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 07374deee1a092e45b9e56e639547cd3, type: 2}

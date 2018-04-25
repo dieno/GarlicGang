@@ -11,6 +11,22 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 1425493496941184}
   m_IsPrefabParent: 1
+--- !u!1 &1088694546700334
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4935347209123414}
+  - component: {fileID: 114396837165797254}
+  m_Layer: 0
+  m_Name: Effect
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1393579692662494
 GameObject:
   m_ObjectHideFlags: 0
@@ -99,8 +115,22 @@ Transform:
   m_Children:
   - {fileID: 4080888055265356}
   - {fileID: 4053229830930886}
+  - {fileID: 4935347209123414}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4935347209123414
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1088694546700334}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4895363005965208}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &61745535782004444
 BoxCollider2D:
@@ -142,6 +172,26 @@ MonoBehaviour:
   Target: {fileID: 0}
   AlwaysForceDisable: 1
   AlwaysForceEnable: 0
+--- !u!114 &114396837165797254
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1088694546700334}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24549c2ed1c114849b3589b06f8b9f1a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Repeatable: 0
+  Prefab: {fileID: 1236395492461704, guid: b4946fce2d93f7a4085fcb9e503804c7, type: 2}
+  SpawnParent: {fileID: 0}
+  OverrideTransform: 0
+  OverrideTransformRelative: 0
+  OverridePosition: {x: 0, y: 0, z: 0}
+  OverrideRotation: {x: 0, y: 0, z: 0}
+  OverrideScale: {x: 0, y: 0, z: 0}
+  ActivateObject: 1
 --- !u!114 &114510853484914730
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -183,6 +233,17 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 114070737838732996}
+        m_MethodName: Execute
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 114396837165797254}
         m_MethodName: Execute
         m_Mode: 0
         m_Arguments:
