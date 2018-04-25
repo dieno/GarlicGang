@@ -195,8 +195,14 @@ public class PlayerControl : MonoBehaviour
 
         float run = Input.GetButton("Run") ? runMult : 1;
 
-        //Add force to player rigidbody based on the vector (direction and magnitude)
-        rb.AddForce(movementVec * speed * run);
+        if (movementVec.x != 0 || movementVec.y != 0)
+        {
+            //Add force to player rigidbody based on the vector (direction and magnitude)
+            rb.AddForce(movementVec * speed * run);
+        } else {
+            rb.velocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+        }
     }
 
     void ShootControl()
