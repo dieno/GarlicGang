@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 50476116359684270}
   m_Layer: 0
   m_Name: Enemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -146,7 +146,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
@@ -199,11 +199,13 @@ MonoBehaviour:
   DamageResistance: 0
   MaxHealth: 5
   speed: 10
+  stoppingDistance: 10
+  isActive: 0
   BulletPrefab: {fileID: 1424906035088890, guid: 28b9796bd7df94b4d8f2139bbb77da6c,
     type: 2}
   BulletSpawn: {fileID: 4265566058199916}
   BulletSpeed: 25
-  BulletLifetime: 2
+  BulletLifetime: 10
   BulletDamage: 2
   BulletPierce: 0
   BulletSpread: 2

@@ -178,8 +178,14 @@ public class PlayerControl : MonoBehaviour
         //Get vector input from both horizontal and vertical axix (WASD)
         movementVec = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
-        //Add force to player rigidbody based on the vector (direction and magnitude)
-        rb.AddForce(movementVec * speed);
+        if (movementVec.x != 0 || movementVec.y != 0)
+        {
+            //Add force to player rigidbody based on the vector (direction and magnitude)
+            rb.AddForce(movementVec * speed);
+        } else {
+            rb.velocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+        }
     }
 
     void ShootControl()
