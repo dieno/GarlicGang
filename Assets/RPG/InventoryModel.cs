@@ -245,9 +245,9 @@ namespace CommonCore.RPG
                 {
                     instance = new InventoryItemInstance(mdl);
                     Items.Add(instance);
+                    instance.Quantity = 0;
                 }
-
-                instance.Quantity = 0;
+                
                 instance.Quantity += quantity;
             }
             else
