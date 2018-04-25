@@ -207,8 +207,8 @@ MonoBehaviour:
   BulletSpawn: {fileID: 4265566058199916}
   BulletSpeed: 25
   BulletLifetime: 10
-  BulletDamage: 2
-  BulletPierce: 0
+  BulletDamage: 6
+  BulletPierce: 1
   BulletSpread: 2
   MagazineCapacity: 5
   MagazineReloadTime: 2
