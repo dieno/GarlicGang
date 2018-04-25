@@ -10,7 +10,7 @@ public class EnemySpawn : MonoBehaviour {
     void Start () {
         GameObject enemyObj = Resources.Load<GameObject>("Prefabs/Enemy");
 
-        enemy = (GameObject) Instantiate(enemyObj, transform.position, Quaternion.identity);
+        enemy = (GameObject) Instantiate(enemyObj, transform.position, Quaternion.identity, transform.root);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

@@ -193,7 +193,8 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  DestroyEffect: {fileID: 0}
+  DestroyEffect: {fileID: 1096905722898464, guid: 5dfb0b0a95ac8d74cba4eade4020dc4c,
+    type: 2}
   FireEffectPrefab: {fileID: 0}
   DamageThreshold: 0
   DamageResistance: 0
